@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Crawling with Selenium  - studio-31 | 김현규
+        
+    </title>
+
+    <link rel="canonical" href="http://yoursite.com/2018/06/22/Crawling-2/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('crawling.png')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/BeanTechSign-white.png');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Web" title="Web">Web</a>
+                            
+                        </div>
+                        <h1>Crawling with Selenium </h1>
+                        <h2 class="subheading">crawling </h2>
+                        <span class="meta">
+                            Posted by Hyunkyu KIM on
+                            2018-06-22
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Studio -31</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1><span id="crawling-with-selenium">Crawling with Selenium</span></h1>
+<p><a href="http://www.seleniumhq.org/" target="_blank" rel="noopener">Selenium</a></p>
+<ul>
+<li>가상의 브라우져를 열어서 작업하기 때문에, 웹상에서의 행동을 다양하게 할 수 있다. (원래는 웹을 테스트하기 위한 프레임 워크라고 한다.)</li>
+<li>Driver는 Chrome 이나 PhantomJS를 쓰는데, 개인적인 경험 상, PhantomJS가 훨씬 빠른 것 같다.</li>
+</ul>
+<p><strong><ex></ex></strong></p>
+<h5><span id="open-browser">open browser</span></h5>
+<ul>
+<li>크롬 브라우져로 브라우져 오픈</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver =  webdriver.Chrome()</span><br></pre></td></tr></table></figure>
+<h5><span id="move-web-page">move web page</span></h5>
+<ul>
+<li>url로 페이지 이동</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.get(<span class="string">"http://www.naver.com"</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="set-window-size">set window size</span></h5>
+<ul>
+<li>윈도우 사이즈 조절</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.set_window_size(<span class="number">800</span>, <span class="number">600</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="scroll-move">scroll move</span></h5>
+<ul>
+<li>브라우져의 스크롤 위치 이동</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.execute_script(<span class="string">"window.scrollTo(200, 300);"</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="save-current-window">save current window</span></h5>
+<ul>
+<li>메인 윈도우의 위치를 저장</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main_window = driver.current_window_handle</span><br><span class="line">main_window</span><br></pre></td></tr></table></figure>
+<pre><code>'CDwindow-(CF4BF8B2794C9A65BA9E78EF29401630)'
+</code></pre>
+<h5><span id="open-new-window-tab">open new window tab</span></h5>
+<ul>
+<li>자바스크립트를 이용하여 새로운 탭 오픈</li>
+<li>새로운 탭을 열었지만 포커스는 처음 오픈한 페이지에 있습니다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.execute_script(<span class="string">"window.open('https://www.google.com');"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.get(<span class="string">'http://daum.net/'</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="check-windows">check windows</span></h5>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">windows = driver.window_handles</span><br><span class="line">windows</span><br></pre></td></tr></table></figure>
+<pre><code>['CDwindow-(CF4BF8B2794C9A65BA9E78EF29401630)',
+ 'CDwindow-(F3F5477789D94F938A4413E46AD9480)']
+</code></pre>
+<h5><span id="change-focus">change focus</span></h5>
+<ul>
+<li>새로 오픈한 페이지로 포커스를 변경</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.switch_to_window(windows[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.get(<span class="string">'http://facebook.com/'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>앞에서 저장해 놓은 main_window 변수를 이용하여 메인페이지로 다시 포커스 변경</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.switch_to_window(main_window)</span><br></pre></td></tr></table></figure>
+<h5><span id="page-reload">page reload</span></h5>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.execute_script(<span class="string">"location.reload();"</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="alert-다루기">alert 다루기</span></h5>
+<ul>
+<li>alert과 cofirm</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># open alert</span></span><br><span class="line"><span class="comment">#driver.execute_script("alert('selenium test');")</span></span><br><span class="line">driver.execute_script(<span class="string">"confirm('confirm?');"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># focus alert</span></span><br><span class="line">alert = driver.switch_to_alert()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># get alert text</span></span><br><span class="line">alert.text</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.find_element_by_css_selector( <span class="string">"#q"</span> ).send_keys( <span class="string">"패스트캠퍼스"</span> )</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">driver.find_element_by_css_selector(<span class="string">".ico_pctop.btn_search"</span>).click()</span><br><span class="line"><span class="comment"># driver.find_element_by_css_selector("#daumBtnSearch").click()</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># close driver </span></span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line"><span class="comment">## close all driver</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> window <span class="keyword">in</span> driver.window_handles:</span><br><span class="line">    driver.switch_to_window(window)</span><br><span class="line">    driver.close()</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 드라이버 생성</span></span><br><span class="line"><span class="comment"># chromedriver 설치된 경로를 정확히 기재해야 함</span></span><br><span class="line"><span class="comment"># driver = webdriver.Chrome('/usr/local/Cellar/chromedriver/chromedriver') # 맥 </span></span><br><span class="line">driver = webdriver.PhantomJS(<span class="string">'/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs'</span>) <span class="comment"># 맥</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 크롤링할 사이트 호출</span></span><br><span class="line">driver.get(<span class="string">"http://www.python.org"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Selenium은 웹테스트를 위한 프레임워크로 다음과 같은 방식으로 웹테스트를 자동으로 진행함 (참고)</span></span><br><span class="line"><span class="keyword">assert</span> <span class="string">"Python"</span> <span class="keyword">in</span> driver.title</span><br><span class="line"></span><br><span class="line"><span class="comment"># &lt;input id="id-search-field" name="q" 검색창 name으로 검색하기</span></span><br><span class="line"><span class="comment"># 태그 name으로 특정한 태그를 찾을 수 있음</span></span><br><span class="line">elem = driver.find_element_by_name(<span class="string">"q"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># input 텍스트 초기화 </span></span><br><span class="line"><span class="comment"># elem.clear()</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 키 이벤트 전송가능함</span></span><br><span class="line"><span class="comment"># 태그가 input 태그이므로 입력창에 키이벤트가 전달되면, 입력값이 자동으로 작성됨</span></span><br><span class="line">elem.send_keys(<span class="string">"pycon"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 태그가 input 태그이므로 엔터 입력시 form action이 진행됨</span></span><br><span class="line">elem.send_keys(Keys.RETURN)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Selenium은 웹테스트를 위한 프레임워크로 다음과 같은 방식으로 웹테스트를 자동으로 진행함 (참고)</span></span><br><span class="line"><span class="keyword">assert</span> <span class="string">"No results found."</span> <span class="keyword">not</span> <span class="keyword">in</span> driver.page_source</span><br><span class="line"></span><br><span class="line"><span class="comment"># 명시적으로 일정시간을 기다릴 수 있음 (10초 기다림)</span></span><br><span class="line">time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 스크린샷도 찍을 수 있습니다.</span></span><br><span class="line">driver.set_window_size(<span class="number">1400</span>, <span class="number">1000</span>)</span><br><span class="line">elem.screenshot(<span class="string">"pycon_event.png"</span>)</span><br><span class="line"><span class="keyword">assert</span> <span class="string">"No results found."</span> <span class="keyword">not</span> <span class="keyword">in</span> driver.page_source</span><br><span class="line"></span><br><span class="line"><span class="comment">############################################</span></span><br><span class="line">title = driver.find_element_by_tag_name(<span class="string">'h3'</span>)</span><br><span class="line"><span class="keyword">print</span> (title.text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 모든 태그 검색</span></span><br><span class="line">h3s = driver.find_elements_by_tag_name(<span class="string">'h3'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> h3 <span class="keyword">in</span> h3s:</span><br><span class="line">    <span class="keyword">print</span> (h3.text)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># or by css selector </span></span><br><span class="line">title = driver.find_element_by_css_selector(<span class="string">"h3.tit_view"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># role attribute가 navigation인 div태그</span></span><br><span class="line">nav = driver.find_element_by_css_selector(<span class="string">"div[role='navigation']"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################################</span></span><br><span class="line">title_data = driver.find_element_by_css_selector(<span class="string">'html head title'</span>)</span><br><span class="line">print(title_data.get_attribute(<span class="string">'text'</span>))</span><br><span class="line"></span><br><span class="line">title_data = driver.find_element_by_css_selector(<span class="string">'html &gt; title'</span>)</span><br><span class="line"><span class="comment"># head 태그 안에 있는 title 정보는 get_attribute('text') 메서드로 추출할 수 있습니다. </span></span><br><span class="line">print(title_data.get_attribute(<span class="string">'text'</span>))</span><br><span class="line"></span><br><span class="line">contents = driver.find_element_by_css_selector(<span class="string">"div#harmonyContainer"</span>)</span><br><span class="line"><span class="comment"># body 안에 있는 태그 요소는 .text 로 추출할 수 있습니다. (출력이 잘 안되면, 둘다 써보셔도 좋습니다.)</span></span><br><span class="line">print(contents.text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> contents.find_elements_by_tag_name(<span class="string">'p'</span>):</span><br><span class="line">    <span class="keyword">print</span> (p.text)</span><br><span class="line"></span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
+<h4><span id="can-handle-time-for-loading-or-cheating-to-avoid-being-blocked">Can handle time for loading or cheating to avoid being blocked</span></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">driver = webdriver.PhantomJS(<span class="string">'/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs'</span>)</span><br><span class="line">driver.get(<span class="string">'http://v.media.daum.net/v/20170202180355822'</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment"># id가 cMain인 tag를 10초 내에 검색, 그렇지 않으면 timeoutexception 발생</span></span><br><span class="line">    element = WebDriverWait(driver, <span class="number">10</span>).until(</span><br><span class="line">        <span class="comment"># By.ID 는 ID로 검색, By.CSS_SELECTOR 는 CSS Selector 로 검색</span></span><br><span class="line">        EC.presence_of_element_located((By.ID, <span class="string">"cMain"</span>))</span><br><span class="line">    )</span><br><span class="line">    print(element.text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> TimeoutException:</span><br><span class="line">    print(<span class="string">"해당 페이지에 cMain 을 ID 로 가진 태그가 존재하지 않거나, 해당 페이지가 10초 안에 열리지 않았습니다."</span>)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    driver.quit()</span><br></pre></td></tr></table></figure>
+<h4><span id="웹사이트-자동-조작하는-방법">웹사이트 자동 조작하는 방법</span></h4>
+<ul>
+<li>element 클릭: element.click()</li>
+<li>element 더블 클릭: element.double_click()</li>
+<li>element 키보드 입력 전송: element.send_keys()</li>
+<li>element 로 마우스 이동: element.move_to_element()</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.remote.webelement <span class="keyword">import</span> WebElement</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains</span><br><span class="line"></span><br><span class="line">driver = webdriver.PhantomJS(<span class="string">'/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs'</span>)</span><br><span class="line">driver.get(<span class="string">"http://pythonscraping.com/pages/files/form.html"</span>)</span><br><span class="line"></span><br><span class="line">firstnameField = driver.find_element_by_name(<span class="string">"firstname"</span>)</span><br><span class="line">lastnameField = driver.find_element_by_name(<span class="string">"lastname"</span>)</span><br><span class="line">submitButton = driver.find_element_by_id(<span class="string">"submit"</span>)</span><br><span class="line"></span><br><span class="line">firstnameField.send_keys(<span class="string">"Doky"</span>)</span><br><span class="line">lastnameField.send_keys(<span class="string">"Kim"</span>)</span><br><span class="line">submitButton.click()</span><br><span class="line"></span><br><span class="line">print(driver.find_element_by_tag_name(<span class="string">"body"</span>).text)</span><br><span class="line"></span><br><span class="line">driver.close()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ActionChains(): 행동 여러 개를 체인 으로 묶어서 저장하고 원하는 만큼 실행</li>
+<li>perform() 메서드 실행시 전체 행동을 실행함</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.remote.webelement <span class="keyword">import</span> WebElement</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains</span><br><span class="line"></span><br><span class="line">driver = webdriver.PhantomJS(<span class="string">'/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs'</span>)</span><br><span class="line">driver.get(<span class="string">"http://pythonscraping.com/pages/files/form.html"</span>)</span><br><span class="line"></span><br><span class="line">firstnameField = driver.find_element_by_name(<span class="string">"firstname"</span>)</span><br><span class="line">lastnameField = driver.find_element_by_name(<span class="string">"lastname"</span>)</span><br><span class="line">submitButton = driver.find_element_by_id(<span class="string">"submit"</span>)</span><br><span class="line"></span><br><span class="line">actions = ActionChains(driver).click(firstnameField).send_keys(<span class="string">"Doky"</span>).click(lastnameField).send_keys(<span class="string">"Kim"</span>).send_keys(Keys.RETURN)</span><br><span class="line">actions.perform()</span><br><span class="line"></span><br><span class="line">print(driver.find_element_by_tag_name(<span class="string">"body"</span>).text)</span><br><span class="line"></span><br><span class="line">driver.close()</span><br></pre></td></tr></table></figure>
+<h6><span id="what-ive-done">What I’ve done</span></h6>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> requests, json</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://stats.nba.com/stats/leaguedashteamstats?Conference=&amp;DateFrom=&amp;DateTo=&amp;Division=&amp;GameScope=&amp;GameSegment=&amp;LastNGames=0&amp;LeagueID=00&amp;Location=&amp;MeasureType=Base&amp;Month=0&amp;OpponentTeamID=0&amp;Outcome=&amp;PORound=0&amp;PaceAdjust=N&amp;PerMode=PerGame&amp;Period=0&amp;PlayerExperience=&amp;PlayerPosition=&amp;PlusMinus=N&amp;Rank=N&amp;Season=2017-18&amp;SeasonSegment=&amp;SeasonType=Regular+Season&amp;ShotClockRange=&amp;StarterBench=&amp;TeamID=0&amp;VsConference=&amp;VsDivision="</span></span><br><span class="line">driver = webdriver.Chrome()</span><br><span class="line">driver.get(url)</span><br><span class="line"></span><br><span class="line">response = driver.find_element_by_css_selector(<span class="string">"pre"</span>).text</span><br><span class="line">json_data = json.loads(response)</span><br><span class="line"></span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line">columns = json_data[<span class="string">'resultSets'</span>][<span class="number">0</span>][<span class="string">'headers'</span>]</span><br><span class="line">len(columns)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">datas = json_data[<span class="string">'resultSets'</span>][<span class="number">0</span>][<span class="string">'rowSet'</span>]</span><br><span class="line">len(datas)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(datas, columns=columns)</span><br><span class="line">df.sort_values(<span class="string">"PTS"</span>, ascending=<span class="keyword">False</span>).reset_index(drop=<span class="keyword">True</span>)</span><br><span class="line">df.tail()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">columns_filter = [<span class="string">"TEAM_NAME"</span>, <span class="string">"GP"</span>, <span class="string">"W"</span>, <span class="string">"L"</span>, <span class="string">"W_PCT"</span>, <span class="string">"MIN"</span>, <span class="string">"FGM"</span>]</span><br><span class="line">columns_rename = &#123;<span class="string">"TEAM_NAME"</span>:<span class="string">"TEAM"</span>, <span class="string">"W_PCT"</span>:<span class="string">"WIN%"</span>&#125;</span><br><span class="line"></span><br><span class="line">df_filter = df.filter(items=columns_filter)</span><br><span class="line">df_filter.tail()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df_rename = df_filter.rename(columns=columns_rename)</span><br><span class="line">df_rename.tail()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">driver = webdriver.Chrome()</span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">"http://stats.nba.com/stats/leaguedashteamstats?Conference=&amp;DateFrom=&amp;DateTo=&amp;Division=&amp;GameScope=&amp;GameSegment=&amp;LastNGames=0&amp;LeagueID=00&amp;Location=&amp;MeasureType=Base&amp;Month=0&amp;OpponentTeamID=0&amp;Outcome=&amp;PORound=0&amp;PaceAdjust=N&amp;PerMode=PerGame&amp;Period=0&amp;PlayerExperience=&amp;PlayerPosition=&amp;PlusMinus=N&amp;Rank=N&amp;Season=2017-18&amp;SeasonSegment=&amp;SeasonType=Regular+Season&amp;ShotClockRange=&amp;StarterBench=&amp;TeamID=0&amp;VsConference=&amp;VsDivision="</span>)</span><br><span class="line"></span><br><span class="line">pre = driver.find_element_by_css_selector(<span class="string">"pre"</span>).text</span><br><span class="line">data = json.loads(pre)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">teams = data[<span class="string">"resultSets"</span>][<span class="number">0</span>][<span class="string">"rowSet"</span>]</span><br><span class="line">print(len(teams))</span><br><span class="line"></span><br><span class="line">columns = data[<span class="string">"resultSets"</span>][<span class="number">0</span>][<span class="string">"headers"</span>]</span><br><span class="line">print(len(columns))</span><br><span class="line"></span><br><span class="line">df = pd.DataFrame(columns=[columns] )</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> range(len(teams)):</span><br><span class="line">    df.loc[len(df)] = teams[idx]</span><br><span class="line">    </span><br><span class="line">df = df.drop(<span class="string">"TEAM_ID"</span>, axis=<span class="number">1</span>)</span><br><span class="line">df = df.drop(<span class="string">"CFPARAMS"</span>, axis=<span class="number">1</span>)</span><br><span class="line">df= df.sort_values(by= <span class="string">"PTS_RANK"</span>).reset_index(drop = <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### Selenium image screenshot</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Install Pillow </span></span><br><span class="line"><span class="comment"># - 이미지를 컨트롤 하기위한 python 패키지인 Pillow를 설치합니다.</span></span><br><span class="line"><span class="comment"># - `pip3 install pillow`</span></span><br><span class="line"><span class="comment"># - http://pillow.readthedocs.io/en/3.1.x/reference/Image.html</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image <span class="keyword">as</span> pil</span><br><span class="line"></span><br><span class="line"><span class="comment"># pil??</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 브라우져를 열고 youtube 페이지로 이동하여 브라우져 화면을 이미지로 저장합니다. </span></span><br><span class="line">driver =  webdriver.Chrome()</span><br><span class="line">driver.get(<span class="string">"https://www.youtube.com/watch?v=tXOJIBPwSyo&amp;t=200s"</span>) <span class="comment"># t=200s -&gt; 200초부터 재생 가능 -&gt; 이것을 이용해 영상이미지를 추출하는데 활용가능 </span></span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line">driver.save_screenshot(<span class="string">'screenshot.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">##### show image</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 저장된 이미지파일의 사이즈와 이미지를 pillow를 이용하여 확인 합니다.</span></span><br><span class="line">pil_im = pil.open(<span class="string">'screenshot.png'</span>)</span><br><span class="line">print(pil_im.size)</span><br><span class="line">pil_im</span><br><span class="line"></span><br><span class="line"><span class="comment">##### change image size</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pillow를 이용하여 512*512 사이즈로 이미지의 크기를 변환합니다.</span></span><br><span class="line">pil_im.thumbnail((<span class="number">512</span>, <span class="number">512</span>))</span><br><span class="line">pil_im.save(<span class="string">"screenshot_thumnail.png"</span>)</span><br><span class="line">pil.open(<span class="string">'screenshot_thumnail.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">##### select element image</span></span><br><span class="line"><span class="comment"># - 이미지의 특정 영역을 자를수 있습니다.</span></span><br><span class="line"><span class="comment"># - 모니터의 해상도에 따라서 위치를 계산하는 방법에 차이가 있을수 있습니다.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 특정 selector의 element의 위치와 사이즈 데이터를 확인합니다.</span></span><br><span class="line">element = driver.find_element_by_css_selector(<span class="string">'#movie_player'</span>)</span><br><span class="line">location = element.location</span><br><span class="line">size = element.size</span><br><span class="line">location, size</span><br><span class="line"></span><br><span class="line"><span class="comment"># 저장했던 원본이미지를 열어 top, bottom, right, left의 위치를 계산합니다.</span></span><br><span class="line">pil_im = pil.open(<span class="string">'screenshot.png'</span>)</span><br><span class="line">left = location[<span class="string">'x'</span>] * <span class="number">2</span></span><br><span class="line">top = location[<span class="string">'y'</span>] * <span class="number">2</span></span><br><span class="line">right = left + size[<span class="string">'width'</span>] * <span class="number">2</span></span><br><span class="line">bottom = top + size[<span class="string">'height'</span>] * <span class="number">2</span></span><br><span class="line">area = (left, top, right, bottom)</span><br><span class="line">area</span><br><span class="line"><span class="comment"># retina에서 해상도를 위해 모든 요소에 * 2를 한다. </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pillow를 이용하여 계산된 위치로 이미지를 잘라줍니다.</span></span><br><span class="line">pil_im = pil_im.crop(area) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 자른 이미지를 저장하고 저장된 이미지를 보여줍니다.</span></span><br><span class="line">pil_im.save(<span class="string">"screenshot_element.png"</span>)</span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line">pil.open(<span class="string">'screenshot_element.png'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">driver =  webdriver.Chrome()</span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">'https://cloud.google.com/vision/'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ------------------------------------------------------</span></span><br><span class="line"><span class="comment"># - google vision api test 페이지에 이미지 업로드해서 결과 확인</span></span><br><span class="line"><span class="comment"># - 파일 업로드 영역이 iframe으로 되어 있어 iframe으로 포커스 이동</span></span><br><span class="line"></span><br><span class="line">iframe = driver.find_element_by_css_selector(<span class="string">"#vision_demo_section &gt; iframe"</span>)</span><br><span class="line">driver.switch_to_frame(iframe)</span><br><span class="line"></span><br><span class="line"><span class="comment"># switch back default content</span></span><br><span class="line">driver.switch_to_default_content()</span><br><span class="line"></span><br><span class="line">path = !pwd</span><br><span class="line"></span><br><span class="line">file_path = path[<span class="number">0</span>] + <span class="string">"/screenshot_element.png"</span></span><br><span class="line">driver.find_element_by_css_selector(<span class="string">""</span>).send_keys(file_path)</span><br><span class="line"></span><br><span class="line">driver.find_element_by_css_selector(<span class="string">"#webDetection"</span>).click()</span><br><span class="line">print(driver.find_elements_by_css_selector(<span class="string">'.vs-web .name'</span>)[<span class="number">0</span>].text)</span><br><span class="line">driver.close()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Selenium으로 크롤링 할때는, 자주 element나 데이터가 불러왔는지 체크를 하는게 중요하다. 그냥 10초 기다리면 나오겠지하고 기다리기만 하면 혼난다.!</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_element</span><span class="params">(driver, selector)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        driver.find_element_by_css_selector(selector)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    </span><br><span class="line">driver =  webdriver.Chrome()</span><br><span class="line">driver.get(<span class="string">'https://cloud.google.com/vision/'</span>)</span><br><span class="line"></span><br><span class="line">iframe = driver.find_element_by_css_selector(<span class="string">"#vision_demo_section iframe"</span>)</span><br><span class="line">driver.switch_to_frame(iframe)</span><br><span class="line">file_path = path[<span class="number">0</span>] + <span class="string">"/screenshot_element.png"</span></span><br><span class="line">driver.find_element_by_css_selector(<span class="string">"#input"</span>).send_keys(file_path)</span><br><span class="line"></span><br><span class="line">selector = <span class="string">'.vs-web .name'</span></span><br><span class="line">sec, limit_sec = <span class="number">0</span>, <span class="number">10</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    sec += <span class="number">1</span></span><br><span class="line">    print(<span class="string">"&#123;&#125;sec"</span>.format(sec))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># element 확인</span></span><br><span class="line">    <span class="keyword">if</span> check_element(driver, selector):</span><br><span class="line">        driver.find_element_by_css_selector(<span class="string">"#webDetection"</span>).click()</span><br><span class="line">        result = driver.find_elements_by_css_selector(selector)[<span class="number">0</span>].text</span><br><span class="line">        print(result)</span><br><span class="line">        driver.close()</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># limit_sec가 넘어가면 에러 처리</span></span><br><span class="line">    <span class="keyword">if</span> sec + <span class="number">1</span> &gt; limit_sec:</span><br><span class="line">        print(<span class="string">"error"</span>)</span><br><span class="line">        driver.close()</span><br><span class="line">        <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 댓글 크롤링 했던 것 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</span><br><span class="line"><span class="keyword">from</span> selenium.common.exceptions <span class="keyword">import</span> TimeoutException</span><br><span class="line"></span><br><span class="line">driver =  webdriver.PhantomJS(<span class="string">'/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs'</span>)</span><br><span class="line">driver.get(<span class="string">"http://v.media.daum.net/v/20170922175202762"</span>)</span><br><span class="line"><span class="comment">#print(driver.current_url)</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    elem = WebDriverWait(driver, <span class="number">10</span>).until(</span><br><span class="line">        EC.presence_of_element_located((By.ID, <span class="string">'alex-area'</span>))</span><br><span class="line">    )</span><br><span class="line">        </span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            elem = WebDriverWait(driver, <span class="number">5</span>).until(</span><br><span class="line">               EC.presence_of_element_located((By.CSS_SELECTOR, <span class="string">'#alex-area &gt; div &gt; div &gt; div &gt; div.cmt_box &gt; div.alex_more &gt; a &gt; span:nth-child(1)'</span>))</span><br><span class="line">            )            </span><br><span class="line">            more_button = driver.find_element_by_css_selector(<span class="string">'#alex-area &gt; div &gt; div &gt; div &gt; div.cmt_box &gt; div.alex_more &gt; a &gt; span:nth-child(1)'</span>)</span><br><span class="line">            </span><br><span class="line">            action = webdriver.ActionChains(driver).move_to_element(more_button).click(more_button)</span><br><span class="line">            action.perform()</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">            </span><br><span class="line">replies = driver.find_elements_by_class_name(<span class="string">'desc_txt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, reply <span class="keyword">in</span> enumerate(replies):</span><br><span class="line">        </span><br><span class="line">    print(<span class="string">'&#123;&#125;] &#123;&#125;'</span>.format(i+<span class="number">1</span>, reply.text),end=<span class="string">'\n\n'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Facebook에 로그인 하는 것 </span></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</span><br><span class="line"><span class="keyword">from</span> selenium.common.exceptions <span class="keyword">import</span> TimeoutException </span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.remote.webelement <span class="keyword">import</span> WebElement</span><br><span class="line"><span class="keyword">import</span> webbrowser</span><br><span class="line"><span class="comment"># email과 password를 입력 받는다. </span></span><br><span class="line">Email = input(<span class="string">"Email or Mobile number, please"</span>)</span><br><span class="line">Password = input(<span class="string">'password, please'</span>)</span><br><span class="line"></span><br><span class="line">login_url = <span class="string">'https://www.facebook.com/'</span></span><br><span class="line"><span class="comment">#driver =  webdriver.PhantomJS('/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs')</span></span><br><span class="line">chromedriver = <span class="string">'/Users/MAC/Desktop/seleniumpratice/chromedriver'</span> <span class="comment"># 맥</span></span><br><span class="line">driver = webdriver.Chrome(chromedriver)</span><br><span class="line">driver.get(login_url)</span><br><span class="line"><span class="comment"># driver가 url 안의 html을 가지게 된다.</span></span><br><span class="line"><span class="comment"># 페이스북에서 로그인이 되어있다면, 로그인 form이 없으므로, try 문은 에러가 난다. 이때는</span></span><br><span class="line"><span class="comment"># 이미 로그인 되어있다고 메세지를 출력한다. </span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    element = WebDriverWait(driver, <span class="number">5</span>).until(</span><br><span class="line">        EC.presence_of_element_located((By.ID, <span class="string">"login_form"</span>))</span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># actionchains를 이용해 email, password각각에 값을 넣어주고 엔터를 눌러준다.</span></span><br><span class="line">    email = driver.find_element_by_css_selector(<span class="string">'#email'</span>)</span><br><span class="line">    password = driver.find_element_by_css_selector(<span class="string">'#pass'</span>)</span><br><span class="line">    loginbutton = driver.find_element_by_xpath(<span class="string">'//*[@id="u_0_9"]'</span>)</span><br><span class="line"></span><br><span class="line">    action = webdriver.ActionChains(driver).click(email).send_keys(Email).click(password).send_keys(Password).send_keys(Keys.RETURN)</span><br><span class="line"></span><br><span class="line">    action.perform()</span><br><span class="line">    <span class="comment">#혹시 입력한 email이나 password가 잘못되었으면, 로그인 창만 있는 페이지로 바뀐다.</span></span><br><span class="line">    <span class="comment"># 이때 password나 email이 잘못되었다고 신호를 준다. </span></span><br><span class="line">    <span class="keyword">try</span>: </span><br><span class="line">        driver.find_element_by_id(<span class="string">'email'</span>)</span><br><span class="line">        print(<span class="string">"you got wrong id or password"</span>) </span><br><span class="line">    <span class="keyword">except</span>: </span><br><span class="line">        webbrowser.open(login_url)</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> TimeoutException:</span><br><span class="line">    print(<span class="string">'You already logged in!'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    driver.quit()</span><br></pre></td></tr></table></figure>
+<h5><span id="gmarket-베스트-셀러-데이터-스크래핑">Gmarket 베스트 셀러 데이터 스크래핑</span></h5>
+<ul>
+<li>전체 200개중 상위 10개 출력</li>
+<li>pandas 데이터를 분석할수 있는 python 라이브러리
+<ul>
+<li>pip3 install pandas</li>
+<li>데이터 프레임 생성 : df = pd.DataFrame(columns=[“A”,“B”])</li>
+<li>데이터 추가 : df.loc[len(df)] = [{“A”:1,“B”:2}, {“A”:3,“B”:4}]</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_gmarket_bestsellers</span><span class="params">(number=<span class="number">10</span>)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_int</span><span class="params">(price)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> int(price.replace(<span class="string">","</span>,<span class="string">""</span>).replace(<span class="string">"원"</span>,<span class="string">""</span>))</span><br><span class="line">    </span><br><span class="line">    driver =  webdriver.Chrome()</span><br><span class="line">    driver.get(<span class="string">'http://corners.gmarket.co.kr/Bestsellers'</span>)</span><br><span class="line"></span><br><span class="line">    bestlist_selector = driver.find_elements_by_css_selector(<span class="string">"#gBestWrap .best-list"</span>)[<span class="number">1</span>]</span><br><span class="line">    items = bestlist_selector.find_elements_by_css_selector(<span class="string">"li"</span>)[:number]</span><br><span class="line">    </span><br><span class="line">    df = pd.DataFrame(columns=[<span class="string">"상품명"</span>,<span class="string">"원가"</span>,<span class="string">"판매가"</span>,<span class="string">"이미지"</span>,<span class="string">"상품링크"</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> items:</span><br><span class="line"></span><br><span class="line">        idx = item.find_element_by_css_selector(<span class="string">"p"</span>).text <span class="comment"># 순번</span></span><br><span class="line">        img_link = item.find_element_by_css_selector(<span class="string">"img"</span>).get_attribute(<span class="string">"src"</span>) <span class="comment"># 이미지 URL</span></span><br><span class="line">        item_link = item.find_element_by_css_selector(<span class="string">".itemname"</span>).get_attribute(<span class="string">"href"</span>) <span class="comment"># 아이템 URL</span></span><br><span class="line">        content = item.find_element_by_css_selector(<span class="string">".itemname"</span>).text <span class="comment"># 아이템 텍스트</span></span><br><span class="line">        o_price = item.find_element_by_css_selector(<span class="string">".item_price .o-price"</span>).text <span class="comment"># 오리지날 가격</span></span><br><span class="line">        s_price = item.find_element_by_css_selector(<span class="string">".item_price .s-price"</span>).text.split(<span class="string">" "</span>)[<span class="number">0</span>] <span class="comment"># 판매 가격</span></span><br><span class="line">        o_price = o_price <span class="keyword">if</span> o_price <span class="keyword">else</span> s_price <span class="comment"># 원가 데이터가 없는경우 판매가를 대입</span></span><br><span class="line">        </span><br><span class="line">        data = &#123;<span class="string">"상품명"</span>: content,</span><br><span class="line">                <span class="string">"원가"</span>: to_int(o_price), </span><br><span class="line">                <span class="string">"판매가"</span>: to_int(s_price),</span><br><span class="line">                <span class="string">"이미지"</span>: img_link, </span><br><span class="line">                <span class="string">"상품링크"</span>: item_link, &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Pandas 데이터 입력</span></span><br><span class="line">        df.loc[len(df)] = data</span><br><span class="line">        </span><br><span class="line">    driver.close()</span><br><span class="line">    <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%time</span><br><span class="line">result = get_gmarket_bestsellers(<span class="number">200</span>)</span><br><span class="line">result.tail()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>상품명</th>
+      <th>원가</th>
+      <th>판매가</th>
+      <th>이미지</th>
+      <th>상품링크</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>195</th>
+      <td>[삼성전자][G]삼성 TDS신가열 RE-C21KB 21L 전자레인지</td>
+      <td>90400</td>
+      <td>85880</td>
+      <td>http://gdimg.gmarket.co.kr/836058599/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+    </tr>
+    <tr>
+      <th>196</th>
+      <td>[삼성전자]인증점P 17년신형 진공청소기 VC33M2110LP 당일출고</td>
+      <td>103000</td>
+      <td>87900</td>
+      <td>http://gdimg.gmarket.co.kr/916901271/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+    </tr>
+    <tr>
+      <th>197</th>
+      <td>비앤티박스 택배박스/착한가격/당일퀵배송/최고품질/</td>
+      <td>35000</td>
+      <td>31700</td>
+      <td>http://gdimg.gmarket.co.kr/293963256/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+    </tr>
+    <tr>
+      <th>198</th>
+      <td>MAANGE 프로페셔널 메이크업 브러쉬 22종 세트-2color</td>
+      <td>29900</td>
+      <td>12900</td>
+      <td>http://gdimg.gmarket.co.kr/1156619333/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+    </tr>
+    <tr>
+      <th>199</th>
+      <td>[소프시스]소프시스 철제5단서랍</td>
+      <td>36900</td>
+      <td>28900</td>
+      <td>http://gdimg.gmarket.co.kr/1207302715/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Pandas로 할인율 계산</span></span><br><span class="line">result[<span class="string">"할인율"</span>] = <span class="number">100</span> - (result[<span class="string">"판매가"</span>] / result[<span class="string">"원가"</span>]) * <span class="number">100</span></span><br><span class="line">result[<span class="string">"할인율"</span>] = result[<span class="string">"할인율"</span>].astype(dtype=<span class="string">"float64"</span>)</span><br><span class="line">result[<span class="string">"할인율"</span>] = round(result[<span class="string">"할인율"</span>], <span class="number">2</span>)</span><br><span class="line">result = result.sort_values(<span class="string">"할인율"</span>, ascending=<span class="keyword">False</span>).reset_index().rename(columns=&#123;<span class="string">"index"</span>: <span class="string">"rank"</span>&#125;)</span><br><span class="line">result.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>rank</th>
+      <th>상품명</th>
+      <th>원가</th>
+      <th>판매가</th>
+      <th>이미지</th>
+      <th>상품링크</th>
+      <th>할인율</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>124</td>
+      <td>[다샵]벽걸이 스탠드 에어컨커버 제습기/선풍기커버</td>
+      <td>26900</td>
+      <td>6500</td>
+      <td>http://gdimg.gmarket.co.kr/509405582/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+      <td>75.84</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>리바이스키즈 여름티셔츠/반팔/반바지/연휴특가</td>
+      <td>35000</td>
+      <td>10500</td>
+      <td>http://gdimg.gmarket.co.kr/1139276022/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+      <td>70.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>19</td>
+      <td>[슈가든]봄신상 여성 구두 힐 로퍼 단화 운동화 슬립온 종합</td>
+      <td>33000</td>
+      <td>9900</td>
+      <td>http://image.gmarket.co.kr/challenge/neo_image...</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+      <td>70.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>126</td>
+      <td>[또래친구]2018/상하복/운동복/체육복/기능성/주니어세트</td>
+      <td>53000</td>
+      <td>15900</td>
+      <td>http://gdimg.gmarket.co.kr/706563579/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+      <td>70.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>113</td>
+      <td>(키즈꼬모) 봄 상하복 6900 / 아동복 / 등원복</td>
+      <td>23000</td>
+      <td>6900</td>
+      <td>http://gdimg.gmarket.co.kr/1232338881/still/300</td>
+      <td>http://item2.gmarket.co.kr/Item/DetailView/Ite...</td>
+      <td>70.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># utf-8로 인코딩한 csv 파일로 저장</span></span><br><span class="line">result.to_csv(<span class="string">"gmarket.csv"</span>, encoding=<span class="string">"utf-8"</span>)</span><br></pre></td></tr></table></figure>
+<h5><span id="naver-메일-데이터-스크래핑">Naver 메일 데이터 스크래핑</span></h5>
+<ul>
+<li>네이버 메일에 로그인한후 데이터 가져오기</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> time</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 패스워드 저장하기</span></span><br><span class="line"><span class="comment"># pw = ""</span></span><br><span class="line"><span class="comment"># file = open("pw.pickle", "wb")</span></span><br><span class="line"><span class="comment"># pickle.dump(pw, file)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main_url = <span class="string">"http://naver.com"</span> </span><br><span class="line">mail_url = <span class="string">"http://mail.naver.com"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 브라우져 오픈 및 메인 사이트 이동</span></span><br><span class="line">driver = webdriver.Chrome()</span><br><span class="line">driver.get(main_url)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 아이디 패스워드 입력</span></span><br><span class="line">pw = pickle.load(open(<span class="string">"pw.pickle"</span>, <span class="string">"rb"</span>)) <span class="comment"># pw 변수에 본인의 패스워드 입력</span></span><br><span class="line">driver.find_element_by_css_selector( <span class="string">"#id"</span> ).send_keys( <span class="string">"1221pdj"</span> )</span><br><span class="line">driver.find_element_by_css_selector( <span class="string">"#pw"</span> ).send_keys( pw )</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 로그인 버튼 클릭</span></span><br><span class="line">driver.find_element_by_css_selector(<span class="string">"span.btn_login input[type=submit]"</span>).click()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 메일 페이지로 이동</span></span><br><span class="line">driver.get(mail_url)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 메일 갯수</span></span><br><span class="line">total_mail = driver.find_element_by_css_selector(<span class="string">"#headTotalNum"</span>).text</span><br><span class="line">total_mail = int(total_mail)</span><br><span class="line">total_mail</span><br></pre></td></tr></table></figure>
+<pre><code>30
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 안읽은 메일 갯수</span></span><br><span class="line">not_read_mail = driver.find_element_by_css_selector(<span class="string">"#headUnreadNum"</span>).text</span><br><span class="line">not_read_mail = int(not_read_mail)</span><br><span class="line">not_read_mail</span><br></pre></td></tr></table></figure>
+<pre><code>25
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 메일 제목, 보낸사람 이름 가져오기</span></span><br><span class="line">mails = driver.find_elements_by_css_selector(<span class="string">".mailList.sender_context &gt; li"</span>)</span><br><span class="line">print(<span class="string">"전체 메일수 : "</span>, len(mails))</span><br><span class="line">df = pd.DataFrame(columns=[<span class="string">"제목"</span>,<span class="string">"보낸사람"</span>,<span class="string">"메일링크"</span>])</span><br><span class="line"><span class="keyword">for</span> idx, mail <span class="keyword">in</span> enumerate(mails):</span><br><span class="line">    title = mail.find_element_by_css_selector(<span class="string">".mail_title"</span>).text</span><br><span class="line">    name = mail.find_element_by_css_selector(<span class="string">".name"</span>).text</span><br><span class="line">    link = mail.find_element_by_css_selector(<span class="string">".subject &gt; a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">    df.loc[len(df)] = &#123; <span class="string">"제목"</span>:title, <span class="string">"보낸사람"</span>:name, <span class="string">"메일링크"</span>:link &#125;    </span><br><span class="line">df.tail()</span><br></pre></td></tr></table></figure>
+<pre><code>전체 메일수 :  30
+</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>제목</th>
+      <th>보낸사람</th>
+      <th>메일링크</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>25</th>
+      <td>SMTP Send File 테스트(제목)</td>
+      <td>utmostar0201@gmai..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11887</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>SMTP Send File 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11886</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>SMTP Send HTML 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11885</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>SMTP Send Text 테스트(제목)</td>
+      <td>junkoo0101@gmail.co..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11884</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>SMTP Send Text 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11883</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># marked 메일</span></span><br><span class="line">mails = driver.find_elements_by_css_selector(<span class="string">".mailList.sender_context &gt; li.mark"</span>)</span><br><span class="line">print(<span class="string">"전체 메일수 : "</span>, len(mails))</span><br><span class="line">df = pd.DataFrame(columns=[<span class="string">"제목"</span>,<span class="string">"보낸사람"</span>,<span class="string">"메일링크"</span>])</span><br><span class="line"><span class="keyword">for</span> idx, mail <span class="keyword">in</span> enumerate(mails):</span><br><span class="line">    title = mail.find_element_by_css_selector(<span class="string">".mail_title"</span>).text</span><br><span class="line">    name = mail.find_element_by_css_selector(<span class="string">".name"</span>).text</span><br><span class="line">    link = mail.find_element_by_css_selector(<span class="string">".subject &gt; a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">    df.loc[len(df)] = &#123; <span class="string">"제목"</span>:title, <span class="string">"보낸사람"</span>:name, <span class="string">"메일링크"</span>:link &#125;    </span><br><span class="line">df.tail()</span><br></pre></td></tr></table></figure>
+<pre><code>전체 메일수 :  3
+</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>제목</th>
+      <th>보낸사람</th>
+      <th>메일링크</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>종로구에 있는 사람들이 "Watch Boston Dynamics’ SpotMini ...</td>
+      <td>트위터</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11911</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>문성근 님이 트윗함: 너무 오래 걸렸다. '친일행위' 인촌 김성수, 56년만에 건국...</td>
+      <td>트위터</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11910</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>종로구에 있는 사람들이 "People who think about leaving r...</td>
+      <td>트위터</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11907</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 읽은 메일</span></span><br><span class="line">mails = driver.find_elements_by_css_selector(<span class="string">".mailList.sender_context &gt; li:not(.notRead)"</span>)</span><br><span class="line">print(<span class="string">"total mails: "</span>, len(mails))</span><br><span class="line">df = pd.DataFrame(columns=[<span class="string">"제목"</span>,<span class="string">"보낸사람"</span>,<span class="string">"메일링크"</span>])</span><br><span class="line"><span class="keyword">for</span> idx, mail <span class="keyword">in</span> enumerate(mails):</span><br><span class="line">    title = mail.find_element_by_css_selector(<span class="string">".mail_title"</span>).text</span><br><span class="line">    name = mail.find_element_by_css_selector(<span class="string">".name"</span>).text</span><br><span class="line">    link = mail.find_element_by_css_selector(<span class="string">".subject &gt; a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">    df.loc[len(df)] = &#123; <span class="string">"제목"</span>:title, <span class="string">"보낸사람"</span>:name, <span class="string">"메일링크"</span>:link &#125;    </span><br><span class="line">df.tail()</span><br></pre></td></tr></table></figure>
+<pre><code>total mails:  5
+</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>제목</th>
+      <th>보낸사람</th>
+      <th>메일링크</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Google SMTP로 메일 보내기</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11893</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Google SMTP로 메일 보내기</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11890</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SMTP Send File 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11886</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SMTP Send HTML 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11885</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>SMTP Send Text 테스트(제목)</td>
+      <td>radajin1224@gmail.c..</td>
+      <td>https://mail.naver.com/read/popup/?nMailId=11883</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 로그아웃</span></span><br><span class="line">logout_url = driver.find_element_by_css_selector(<span class="string">".gnb_btn_login"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">driver.get(logout_url)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 브라우져 닫기</span></span><br><span class="line">driver.close()</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/06/22/Crawling-3/" data-toggle="tooltip" data-placement="top" title="CSS selector & XPATH ">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/06/22/Crawling-1/" data-toggle="tooltip" data-placement="top" title="Crawling with requests and BeautifulSoup ">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Crawling with Selenium</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.1.</span> <span class="toc-nav-text">open browser</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.2.</span> <span class="toc-nav-text">move web page</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.3.</span> <span class="toc-nav-text">set window size</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.4.</span> <span class="toc-nav-text">scroll move</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.5.</span> <span class="toc-nav-text">save current window</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.6.</span> <span class="toc-nav-text">open new window tab</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.7.</span> <span class="toc-nav-text">check windows</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.8.</span> <span class="toc-nav-text">change focus</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.9.</span> <span class="toc-nav-text">page reload</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.0.10.</span> <span class="toc-nav-text">alert 다루기</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.1.</span> <span class="toc-nav-text">Can handle time for loading or cheating to avoid being blocked</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.2.</span> <span class="toc-nav-text">웹사이트 자동 조작하는 방법</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-6"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.2.0.1.</span> <span class="toc-nav-text">What I’ve done</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.2.1.</span> <span class="toc-nav-text">Gmarket 베스트 셀러 데이터 스크래핑</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.2.2.</span> <span class="toc-nav-text">Naver 메일 데이터 스크래핑</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Web" title="Web">Web</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://yoursite.com/2018/06/22/Crawling-2/";
+    var disqus_url = "http://yoursite.com/2018/06/22/Crawling-2/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/Kimhyunkyu">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/minus31">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/in/hyunkyukim">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hyunkyu KIM 2018 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://yoursite.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -7,6 +7,30 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2018/06/22/githublicense/</loc>
+        <lastmod>2018-06-22T12:14:05.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2018/06/22/Crawling-3/</loc>
+        <lastmod>2018-06-22T12:13:04.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2018/06/22/Crawling-2/</loc>
+        <lastmod>2018-06-22T12:11:34.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/06/22/Crawling-1/</loc>
         <lastmod>2018-06-22T11:57:24.000Z</lastmod>
         <changefreq>weekly</changefreq>
