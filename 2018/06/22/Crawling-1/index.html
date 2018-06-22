@@ -14,7 +14,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Crawling_1 - studio-31 | 김현규
+          Crawling with requests and BeautifulSoup  - studio-31 | 김현규
         
     </title>
 
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('null')
+            background-image: url('crawling.png')
             /*post*/
         
     }
@@ -90,13 +90,11 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Hexo" title="Hexo">Hexo</a>
-                            
-                              <a class="tag" href="/tags/#Blog" title="Blog">Blog</a>
+                              <a class="tag" href="/tags/#Web" title="Web">Web</a>
                             
                         </div>
-                        <h1>Crawling_1</h1>
-                        <h2 class="subheading"></h2>
+                        <h1>Crawling with requests and BeautifulSoup </h1>
+                        <h2 class="subheading">crawling 1</h2>
                         <span class="meta">
                             Posted by Hyunkyu KIM on
                             2018-06-22
@@ -216,8 +214,236 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1><span id="test-file">test file</span></h1>
+                <h1><span id="crawling-with-requests-and-beautifulsoup">Crawling with requests and BeautifulSoup</span></h1>
+<blockquote>
+<p>크롤링 할 때 마다, 자잘한 메서드 이름 까먹어서 이것 저것 이전 작업물들을 열어보게 된다. 한 곳에 모아놓기 1편 BeautifulSoup</p>
+</blockquote>
+<blockquote>
+<p>개인적으로는 beautifulsoup 으로 할 수 있는 작업 이면, 이것으로 하는 것을 더 좋아한다.(이유는 더 가볍고 <strong>빠르니까!!</strong>)</p>
+</blockquote>
+<blockquote>
+<p>그러나, 정보를 입력 하는 등의 웹 상에서의 행동이 필요하다면 Selenium을 쓴다. 대부분은 bs로 가능하던데 그 때 그 때 판단해서 사용한다.</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>이용 추천 - API(있다면, 이걸 쓰는게 가장 굿) -&gt; bs -&gt; Selenium(정말 안되면 사용하라, 브라우져를 직접 씌우니까 무겁다.)</li>
+</ul>
+</blockquote>
+<p><strong><strong>Flow</strong></strong></p>
+<ol>
+<li>
+<p>Requests로 웹 정보를 받아온다.(html, xml, json $\cdots$)</p>
+</li>
+<li>
+<p>Beautifulsoup으로 html을 파싱한다. 또는 json 파싱을 한다. (xml은 다른 라이브러리를 쓰는게 좋다.<a href="https://www.datacamp.com/community/tutorials/python-xml-elementtree" target="_blank" rel="noopener">elementtree</a>)</p>
+</li>
+<li>
+<p>원하는 정보를 얻는다 !</p>
+</li>
+</ol>
+<h3><span id="requests">Requests</span></h3>
+<ul>
+<li><a href="http://docs.python-requests.org/en/master/" target="_blank" rel="noopener">http://docs.python-requests.org/en/master/</a></li>
+</ul>
+<hr>
+<p>** &lt; practical example &gt; **</p>
+<h5><span id="네이버-주식-데이터-가져오기">네이버 주식 데이터 가져오기</span></h5>
+<ul>
+<li>
+<p>api 사용 : json 파싱을 한다. (<em>파싱 : Data 형태를 바꿔준다.</em>)</p>
+</li>
+<li>
+<p>네이버 주식 페이지에서 주식 데이터를 가져와 데이터 프레임으로 만들기</p>
+</li>
+<li>
+<p><a href="http://m.stock.naver.com" target="_blank" rel="noopener">http://m.stock.naver.com</a></p>
+</li>
+</ul>
+<p>networks -&gt; XHR -&gt; header -&gt; request URL -&gt; <a href="http://m.stock.naver.com/api/mystock/getMyGroupNameList.nhn?1517905359444" target="_blank" rel="noopener">http://m.stock.naver.com/api/mystock/getMyGroupNameList.nhn?1517905359444</a></p>
+<hr>
+<p>** &lt; practical example &gt; **</p>
+<h5><span id="네이버-주식-데이터-가져오기">네이버 주식 데이터 가져오기</span></h5>
+<ul>
+<li>
+<p>api 사용 : json 파싱을 한다. (<em>파싱 : Data 형태를 바꿔준다.</em>)</p>
+</li>
+<li>
+<p>네이버 주식 페이지에서 주식 데이터를 가져와 데이터 프레임으로 만들기</p>
+</li>
+<li>
+<p><a href="http://m.stock.naver.com" target="_blank" rel="noopener">http://m.stock.naver.com</a></p>
+</li>
+</ul>
+<p>networks -&gt; XHR -&gt; header -&gt; request URL -&gt; <a href="http://m.stock.naver.com/api/mystock/getMyGroupNameList.nhn?1517905359444" target="_blank" rel="noopener">http://m.stock.naver.com/api/mystock/getMyGroupNameList.nhn?1517905359444</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_url</span><span class="params">(pageSize=<span class="number">10</span>, page=<span class="number">1</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"http://m.stock.naver.com/api/json/sise/siseListJson.nhn?menu=market_sum&amp;sosok=0&amp;pageSize="</span> + str(pageSize) + <span class="string">"&amp;page="</span> + str(page)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_data</span><span class="params">(url)</span>:</span></span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    json_info = response.json()</span><br><span class="line">    companys = json_info[<span class="string">"result"</span>][<span class="string">"itemList"</span>]</span><br><span class="line">    df = pd.DataFrame(columns=[<span class="string">"종목"</span>, <span class="string">"시세"</span>, <span class="string">"전일비"</span>, <span class="string">"등락율"</span>, <span class="string">"시가총액"</span>, <span class="string">"거래량"</span>])</span><br><span class="line">    <span class="keyword">for</span> company <span class="keyword">in</span> companys:</span><br><span class="line">        df.loc[len(df)] = &#123;</span><br><span class="line">            <span class="string">"종목"</span>:company[<span class="string">"nm"</span>],</span><br><span class="line">            <span class="string">"시세"</span>:company[<span class="string">"nv"</span>],</span><br><span class="line">            <span class="string">"전일비"</span>:company[<span class="string">"cv"</span>],</span><br><span class="line">            <span class="string">"등락율"</span>:company[<span class="string">"cr"</span>],</span><br><span class="line">            <span class="string">"시가총액"</span>:company[<span class="string">"mks"</span>],</span><br><span class="line">            <span class="string">"거래량"</span>:company[<span class="string">"aq"</span>],</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> df</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">url = make_url(<span class="number">100</span>,<span class="number">1</span>)</span><br><span class="line">df = get_data(url)</span><br><span class="line">df.tail()</span><br></pre></td></tr></table></figure>
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
 
+.dataframe tbody tr th {
+    vertical-align: top;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>종목</th>
+      <th>시세</th>
+      <th>전일비</th>
+      <th>등락율</th>
+      <th>시가총액</th>
+      <th>거래량</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>95</th>
+      <td>대우조선해양</td>
+      <td>27300</td>
+      <td>300</td>
+      <td>1.11</td>
+      <td>29267</td>
+      <td>409962</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>현대엘리베이</td>
+      <td>107000</td>
+      <td>-500</td>
+      <td>-0.47</td>
+      <td>28862</td>
+      <td>1246867</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>유한양행</td>
+      <td>235500</td>
+      <td>-3000</td>
+      <td>-1.26</td>
+      <td>28753</td>
+      <td>32390</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>한화</td>
+      <td>38300</td>
+      <td>-700</td>
+      <td>-1.79</td>
+      <td>28709</td>
+      <td>356358</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>GS리테일</td>
+      <td>37200</td>
+      <td>-50</td>
+      <td>-0.13</td>
+      <td>28644</td>
+      <td>158686</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">client_key = <span class="string">'CsODwdUTyG9vOI1uIeIf'</span></span><br><span class="line">client_secret = <span class="string">'YmIx0GW8JG'</span></span><br><span class="line"><span class="comment"># 별도 quote_plus() 메서드등 처리할 필요 없음. requests 객체가 알아서 해줌</span></span><br><span class="line">naver_url = <span class="string">'https://openapi.naver.com/v1/search/news.json?query=스마트폰'</span></span><br><span class="line"></span><br><span class="line">header_params = &#123;<span class="string">"X-Naver-Client-Id"</span>:client_key, <span class="string">"X-Naver-Client-Secret"</span>:client_secret&#125;</span><br><span class="line"><span class="comment"># headers= header_params 는 header 변경시에만 필요하고, 그렇지 않으면, requests.get(원하는 URL) 만 해도 됨</span></span><br><span class="line">response = requests.get(naver_url, headers = header_params)</span><br><span class="line"><span class="comment"># 별도 json.loads() 라이브러리 메서드 사용하지 않아도, reqeusts 라이브러리에 있는 json() 메서드로 간단히 처리 가능함</span></span><br><span class="line"><span class="comment"># print(response.json())</span></span><br><span class="line"><span class="comment"># print(response.text)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTTP 응답 코드는 status_code 에 저장됨</span></span><br><span class="line"><span class="keyword">if</span>(response.status_code == <span class="number">200</span>):</span><br><span class="line">    data = response.json()</span><br><span class="line">    print(data[<span class="string">'items'</span>][<span class="number">0</span>][<span class="string">'title'</span>])</span><br><span class="line">    print(data[<span class="string">'items'</span>][<span class="number">0</span>][<span class="string">'description'</span>])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"Error Code:"</span> + response.status_code)</span><br></pre></td></tr></table></figure>
+<h3><span id="beautifulsoup">BeautifulSoup</span></h3>
+<ul>
+<li><a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/" target="_blank" rel="noopener">https://www.crummy.com/software/BeautifulSoup/bs4/doc/</a></li>
+</ul>
+<p>HTML을 가져와서, parsing 을 해주는 역할은 BeautifulSoup이 수행, 보통 Css selector, Xpath를 이용해서 원하는 정보에 접근 한다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">html = <span class="string">"&lt;html&gt; \</span></span><br><span class="line"><span class="string">            &lt;body&gt; \</span></span><br><span class="line"><span class="string">                &lt;h1 id='title'&gt;[1]크롤링이란?&lt;/h1&gt; \</span></span><br><span class="line"><span class="string">                &lt;p class='cssstyle'&gt;웹페이지에서 필요한 데이터를 추출하는 것&lt;/p&gt; \</span></span><br><span class="line"><span class="string">                &lt;p id='body' align='center'&gt;파이썬을 중심으로 다양한 웹크롤링 기술 발달&lt;/p&gt; \</span></span><br><span class="line"><span class="string">            &lt;/body&gt; \</span></span><br><span class="line"><span class="string">        &lt;/html&gt;"</span></span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(html, <span class="string">"html.parser"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 태그로 검색 방법</span></span><br><span class="line">title_data = soup.find(<span class="string">'h1'</span>)</span><br><span class="line"></span><br><span class="line">print(title_data)</span><br><span class="line">print(title_data.string)</span><br><span class="line">print(title_data.get_text())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 가장 먼저 검색되는 태그를 반환</span></span><br><span class="line">paragraph_data = soup.find(<span class="string">'p'</span>)</span><br><span class="line"></span><br><span class="line">print(paragraph_data)</span><br><span class="line">print(paragraph_data.string)</span><br><span class="line">print(paragraph_data.get_text())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 태그에 있는 id로 검색 (javascript 예를 상기!)</span></span><br><span class="line">title_data = soup.find(id=<span class="string">'title'</span>)</span><br><span class="line"></span><br><span class="line">print(title_data)</span><br><span class="line">print(title_data.string)</span><br><span class="line">print(title_data.get_text())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTML 태그와 CSS class를 활용해서 필요한 데이터를 추출하는 방법1</span></span><br><span class="line">paragraph_data = soup.find(<span class="string">'p'</span>, class_=<span class="string">'cssstyle'</span>)</span><br><span class="line"></span><br><span class="line">print(paragraph_data)</span><br><span class="line">print(paragraph_data.string)</span><br><span class="line">print(paragraph_data.get_text())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTML 태그와 CSS class를 활용해서 필요한 데이터를 추출하는 방법2</span></span><br><span class="line">paragraph_data = soup.find(<span class="string">'p'</span>, <span class="string">'cssstyle'</span>)</span><br><span class="line"></span><br><span class="line">print(paragraph_data)</span><br><span class="line">print(paragraph_data.string)</span><br><span class="line">print(paragraph_data.get_text())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTML 태그와 태그에 있는 속성:속성값을 활용해서 필요한 데이터를 추출하는 방법</span></span><br><span class="line">paragraph_data = soup.find(<span class="string">'p'</span>, attrs = &#123;<span class="string">'align'</span>: <span class="string">'center'</span>&#125;)</span><br><span class="line">print(paragraph_data)</span><br><span class="line">print(paragraph_data.string)</span><br><span class="line">print(paragraph_data.get_text())</span><br><span class="line"></span><br><span class="line"><span class="comment"># find_all() 관련된 모든 데이터를 리스트 형태로 추출하는 함수</span></span><br><span class="line">paragraph_data = soup.find_all(<span class="string">'p'</span>)</span><br><span class="line"></span><br><span class="line">print(paragraph_data)</span><br><span class="line">print(paragraph_data[<span class="number">0</span>].get_text())</span><br><span class="line">print(paragraph_data[<span class="number">1</span>].get_text())</span><br><span class="line"></span><br><span class="line"><span class="comment"># * **string 검색**</span></span><br><span class="line"><span class="comment">#  - 태그가 아닌 문자열 자체로 검색</span></span><br><span class="line"><span class="comment">#  - 문자열, 정규표현식 등등으로 검색 가능</span></span><br><span class="line"><span class="comment">#    - 문자열 검색의 경우 한 태그내의 문자열과 exact matching인 것만 추출</span></span><br><span class="line"><span class="comment">#    - 이것이 의도한 경우가 아니라면 정규표현식 사용</span></span><br><span class="line"></span><br><span class="line">res = requests.get(<span class="string">'http://v.media.daum.net/v/20170518153405933'</span>)</span><br><span class="line">soup = BeautifulSoup(res.content, <span class="string">'html5lib'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> (soup.find_all(string=<span class="string">'오대석'</span>))</span><br><span class="line"><span class="keyword">print</span> (soup.find_all(string=[<span class="string">'[이주의해시태그-#네이버-클로바]쑥쑥 크는 네이버 AI'</span>, <span class="string">'오대석'</span>]))</span><br><span class="line"><span class="keyword">print</span> (soup.find_all(string=<span class="string">'AI'</span>))</span><br><span class="line"><span class="keyword">print</span> (soup.find_all(string=re.compile(<span class="string">'AI'</span>))[<span class="number">0</span>])</span><br><span class="line"><span class="comment"># print (soup.find_all(string=re.compile('AI')))</span></span><br></pre></td></tr></table></figure>
+<pre><code>&lt;h1 id=&quot;title&quot;&gt;[1]크롤링이란?&lt;/h1&gt;
+[1]크롤링이란?
+[1]크롤링이란?
+&lt;p class=&quot;cssstyle&quot;&gt;웹페이지에서 필요한 데이터를 추출하는 것&lt;/p&gt;
+웹페이지에서 필요한 데이터를 추출하는 것
+웹페이지에서 필요한 데이터를 추출하는 것
+&lt;h1 id=&quot;title&quot;&gt;[1]크롤링이란?&lt;/h1&gt;
+[1]크롤링이란?
+[1]크롤링이란?
+&lt;p class=&quot;cssstyle&quot;&gt;웹페이지에서 필요한 데이터를 추출하는 것&lt;/p&gt;
+웹페이지에서 필요한 데이터를 추출하는 것
+웹페이지에서 필요한 데이터를 추출하는 것
+&lt;p class=&quot;cssstyle&quot;&gt;웹페이지에서 필요한 데이터를 추출하는 것&lt;/p&gt;
+웹페이지에서 필요한 데이터를 추출하는 것
+웹페이지에서 필요한 데이터를 추출하는 것
+&lt;p align=&quot;center&quot; id=&quot;body&quot;&gt;파이썬을 중심으로 다양한 웹크롤링 기술 발달&lt;/p&gt;
+파이썬을 중심으로 다양한 웹크롤링 기술 발달
+파이썬을 중심으로 다양한 웹크롤링 기술 발달
+[&lt;p class=&quot;cssstyle&quot;&gt;웹페이지에서 필요한 데이터를 추출하는 것&lt;/p&gt;, &lt;p align=&quot;center&quot; id=&quot;body&quot;&gt;파이썬을 중심으로 다양한 웹크롤링 기술 발달&lt;/p&gt;]
+웹페이지에서 필요한 데이터를 추출하는 것
+파이썬을 중심으로 다양한 웹크롤링 기술 발달
+['오대석']
+['[이주의해시태그-#네이버-클로바]쑥쑥 크는 네이버 AI', '오대석']
+[]
+[이주의해시태그-#네이버-클로바]쑥쑥 크는 네이버 AI | Daum 뉴스
+</code></pre>
+<h2><span id="lt-practical-example-gt"><em>&lt; practical example &gt;</em></span></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line">pp = pprint.PrettyPrinter(indent=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Naver 실시간 검색어 순위</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">naver_top20</span><span class="params">()</span>:</span></span><br><span class="line">    df = pd.DataFrame(columns=[<span class="string">"rank"</span>,<span class="string">"keyword"</span>])</span><br><span class="line">    response = requests.get(<span class="string">"http://naver.com"</span>)</span><br><span class="line">    dom = BeautifulSoup(response.content, <span class="string">"html.parser"</span>)</span><br><span class="line">    keywords = dom.select(<span class="string">".ah_roll .ah_l .ah_item"</span>)</span><br><span class="line">    <span class="keyword">for</span> keyword <span class="keyword">in</span> keywords:</span><br><span class="line">        df.loc[len(df)] = &#123;</span><br><span class="line">            <span class="string">"rank"</span>:keyword.select_one(<span class="string">".ah_r"</span>).text,</span><br><span class="line">            <span class="string">"keyword"</span>:keyword.select_one(<span class="string">".ah_k"</span>).text,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> df</span><br><span class="line">print(<span class="string">"&lt; Naver realtime Keywords &gt;"</span>)</span><br><span class="line">naver_df = naver_top20()</span><br><span class="line">pp.pprint(naver_df.tail(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 다음 실시간 검색어 순위 </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">daum_top10</span><span class="params">()</span>:</span></span><br><span class="line">    df = pd.DataFrame(columns=[<span class="string">"rank"</span>,<span class="string">"keyword"</span>])</span><br><span class="line">    response = requests.get(<span class="string">"http://daum.net"</span>)</span><br><span class="line">    dom = BeautifulSoup(response.content, <span class="string">"html.parser"</span>)</span><br><span class="line">    keywords = dom.select(<span class="string">"#mArticle ol.list_hotissue.issue_row.list_mini &gt; li"</span>)</span><br><span class="line">    <span class="keyword">for</span> keyword <span class="keyword">in</span> keywords:</span><br><span class="line">        df.loc[len(df)] = &#123;</span><br><span class="line">            <span class="string">"rank"</span>:keyword.select_one(<span class="string">".ir_wa"</span>).text.replace(<span class="string">"위"</span>,<span class="string">""</span>),</span><br><span class="line">            <span class="string">"keyword"</span>:keyword.select_one(<span class="string">".link_issue"</span>).text,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> df</span><br><span class="line">print(<span class="string">"*"</span> * <span class="number">50</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"&lt; Daum realtime Keywords &gt;"</span>)</span><br><span class="line">daum_df = daum_top10()</span><br><span class="line">pp.pprint(daum_df.tail(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 위의 결과 중에 중복되는 검색어를 출력</span></span><br><span class="line">result = [keyword <span class="keyword">for</span> keyword <span class="keyword">in</span> daum_df[<span class="string">"keyword"</span>] <span class="keyword">if</span> naver_df[<span class="string">"keyword"</span>].str.contains(keyword).any() ]</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+<pre><code>&lt; Naver realtime Keywords &gt;
+   rank    keyword
+15   16      방탄소년단
+16   17   해운대 모래축제
+17   18  콰이어트 플레이스
+18   19        심혜진
+19   20         달력
+**************************************************
+&lt; Daum realtime Keywords &gt;
+  rank   keyword
+5    6   부처님 오신날
+6    7  냉장고를 부탁해
+7    8        독전
+8    9       홍문종
+9   10     성년의 날
+
+
+
+
+
+['김부겸', '냉장고를 부탁해', '독전']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># File Download</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(title, download_link)</span>:</span></span><br><span class="line">    response = requests.get(download_link, stream=<span class="keyword">True</span>)</span><br><span class="line">    download_path =<span class="string">"/Users/MAC/desktop/&#123;&#125;"</span>.format(title)</span><br><span class="line">    size = <span class="number">0</span></span><br><span class="line">    <span class="keyword">with</span> open(download_path, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> chunk <span class="keyword">in</span> response.iter_content(chunk_size=<span class="number">1024</span>): </span><br><span class="line">            <span class="keyword">if</span> chunk:</span><br><span class="line">                size += <span class="number">1024</span></span><br><span class="line">                f.write(chunk)</span><br><span class="line">    <span class="keyword">return</span> size</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">title = <span class="string">"iPhone X is Here — Apple.mp4"</span></span><br><span class="line">download_link = <span class="string">"http://bit.ly/2FLpRF9"</span></span><br><span class="line">size = download(title, download_link)</span><br><span class="line">print(<span class="string">"download done : &#123;&#125; Mbyte"</span>.format(round(size/<span class="number">1024</span>/<span class="number">1024</span>,<span class="number">2</span>)))</span><br></pre></td></tr></table></figure>
+<pre><code>download done : 0.0 Mbyte
+</code></pre>
+<h4><span id="post-방식">Post 방식</span></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 한빛 미디어에 로그인</span></span><br><span class="line">login_url = <span class="string">'http://www.hanbit.co.kr/member/login_proc.php'</span></span><br><span class="line"></span><br><span class="line">user = <span class="string">'input Id'</span></span><br><span class="line">password = <span class="string">'and password'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># requests.session 메서드는 해당 reqeusts를 사용하는 동안 cookie를 header에 유지하도록 하여</span></span><br><span class="line"><span class="comment"># 세션이 필요한 HTTP 요청에 사용됩니다.</span></span><br><span class="line">session = requests.session()</span><br><span class="line"></span><br><span class="line">params = dict()</span><br><span class="line">params[<span class="string">'m_id'</span>] = user</span><br><span class="line">params[<span class="string">'m_passwd'</span>] = password</span><br><span class="line"></span><br><span class="line"><span class="comment"># javascrit(jQuery) 코드를 분석해보니, 결국 login_proc.php 를 m_id 와 m_passwd 값과 함께</span></span><br><span class="line"><span class="comment"># POST로 호출하기 때문에 다음과 같이 requests.session.post() 메서드를 활용하였습니다.</span></span><br><span class="line"><span class="comment"># 실제코드: &lt;form name="frm"  id="frm"  action="#" method="post"&gt;</span></span><br><span class="line">res = session.post(login_url, data = params) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 응답코드가 200 즉, OK가 아닌 경우 에러를 발생시키는 메서드입니다.</span></span><br><span class="line">res.raise_for_status() </span><br><span class="line"></span><br><span class="line"><span class="comment"># 'Set-Cookie'로 PHPSESSID 라는 세션 ID 값이 넘어옴을 알 수 있다.</span></span><br><span class="line"><span class="comment"># print(res.headers)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cookie로 세션을 로그인 상태를 관리하는 상태를 확인해보기 위한 코드입니다.</span></span><br><span class="line"><span class="comment"># print(session.cookies.get_dict()) </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 여기서부터는 로그인이 된 세션이 유지됩니다. session 에 header에는 Cookie에 PHPSESSID가 들어갑니다.</span></span><br><span class="line">mypage_url = <span class="string">'http://www.hanbit.co.kr/myhanbit/myhanbit.html'</span></span><br><span class="line">res = session.get(mypage_url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 응답코드가 200 즉, OK가 아닌 경우 에러를 발생시키는 메서드입니다.</span></span><br><span class="line">res.raise_for_status() </span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(res.text, <span class="string">'html.parser'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Chrome 개발자 도구에서 CSS SELECTOR를 통해 간단히 가져온 CSS SELECTOR 표현식을 사용</span></span><br><span class="line">he_coin = soup.select_one(<span class="string">'#container &gt; div &gt; div.sm_mymileage &gt; dl.mileage_section2 &gt; dd &gt; span'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 다음과 같이 class를 .mileage_section2 로 그리고 그 하부 태그중에 span이 있다는 식으로 표현도 가능함</span></span><br><span class="line"><span class="comment"># he_coin = soup.select_one('.mileage_section2 span')</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> (<span class="string">'mileage is'</span>, he_coin.get_text())</span><br></pre></td></tr></table></figure>
+<h2><span id="beautifulsoup-으로-했던-것들">BeautifulSoup 으로 했던 것들</span></h2>
+<hr>
+<ul>
+<li>날씨 크롤링 from (<a href="http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108" target="_blank" rel="noopener">http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108</a>)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">res = requests.get(<span class="string">'http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108'</span>)</span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(res.content, <span class="string">'lxml'</span>)</span><br><span class="line"></span><br><span class="line">data_by_locations = soup.find_all(<span class="string">'location'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># cloumns = ['city']</span></span><br><span class="line"><span class="comment"># rows = ['tmef']</span></span><br><span class="line"><span class="comment"># value = 날씨 데이터 </span></span><br><span class="line"><span class="comment">#data_by_locations[0]</span></span><br><span class="line"></span><br><span class="line">df = pd.DataFrame()</span><br><span class="line"><span class="comment">#print(data_by_locations)</span></span><br><span class="line">time_weather = pd.Series()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> location <span class="keyword">in</span> data_by_locations:</span><br><span class="line">    city = location.find(<span class="string">'city'</span>) </span><br><span class="line">    times = location.find_all(<span class="string">'tmef'</span>)</span><br><span class="line">    values = location.find_all(<span class="string">'wf'</span>)</span><br><span class="line">    </span><br><span class="line">    city_name = city.get_text()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(times)):</span><br><span class="line">        weather = values[i].get_text()</span><br><span class="line">        day = times[i].get_text()</span><br><span class="line">        </span><br><span class="line">        time_weather[day] = weather</span><br><span class="line"></span><br><span class="line">    df[city_name] = time_weather</span><br><span class="line"><span class="comment">#    indexing_time = time</span></span><br><span class="line"><span class="comment">#    df.set_index(time_weather.keys())</span></span><br><span class="line"></span><br><span class="line">df.to_csv(<span class="string">'/Users/Mac/Desktop/weather.csv'</span>)</span><br><span class="line">    </span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<div class="alert alert-block alert-warning">
+<font color="blue" size="3em"><b>네이버 영화 댓글 크롤링 프로젝트</b></font>
+http://movie.naver.com/
+<p><font size="3em"><b>요구사항:</b></font><br><br>
+<a href="http://movie.naver.com/movie/running/current.nhn" target="_blank" rel="noopener">http://movie.naver.com/movie/running/current.nhn</a> 페이지(현재 상영영화)에서 <br><br>
+<br><br>
+(1) 예매순 1위 ~ 5위에 해당하는 영화 각각의<br><br>
+(2) 개봉후 평점글(140자 평)을 <br><br>
+(3) 호감순 100개 읽어서 출력하기<br><br>
+<br><br>
+<font size="3em"><b>출력 포멧:</b></font><br><br>
+[영화 이름] (호감순 140자 평)<br><br>
+1]호감순 140자 평1<br><br>
+2]호감순 140자 평1<br><br>
+<b>.</b><br><br>
+<b>.</b><br><br>
+<b>.</b><br><br>
+100]호감순 140자 평1<br><br>
+<br><br>
+<font size="3em"><b>고려 사항:</b></font><br><br>
+140자 평이 100개 이하일 경우에는 140자 평 갯수만큼 출력할 것<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">res = requests.get(<span class="string">'http://movie.naver.com/movie/running/current.nhn'</span>)</span><br><span class="line">soup = BeautifulSoup(res.content, <span class="string">'html.parser'</span>)</span><br><span class="line"></span><br><span class="line">movie_list = &#123;&#125;</span><br><span class="line">movies = soup.select(<span class="string">"#content &gt; div.article &gt; div &gt; div.lst_wrap &gt; ul &gt; li"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">    movie = movies[n].find_all(<span class="string">"a"</span>)</span><br><span class="line">    movie_list[movie[<span class="number">1</span>].string] = <span class="string">"http://movie.naver.com"</span>+movie[<span class="number">0</span>].get(<span class="string">'href'</span>).replace(<span class="string">"basic"</span>, <span class="string">"pointWriteFormList"</span>)+<span class="string">"&amp;type=after&amp;page="</span></span><br><span class="line">        </span><br><span class="line"><span class="keyword">for</span> movie_name, movie_href <span class="keyword">in</span> movie_list.items():</span><br><span class="line">    print(<span class="string">'[&#123;&#125;] (호감순 140자 평)'</span>.format(movie_name))</span><br><span class="line">    comments = []</span><br><span class="line">    i=<span class="number">0</span></span><br><span class="line">    loop = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">while</span> loop <span class="keyword">and</span> i &lt; <span class="number">10</span>:</span><br><span class="line">        i+=<span class="number">1</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            res = requests.get(movie_href+str(i))</span><br><span class="line">            soup = BeautifulSoup(res.content, <span class="string">'html.parser'</span>)</span><br><span class="line">            comment_list = soup.select(<span class="string">"body &gt; div &gt; div &gt; div.score_result &gt; ul"</span>)</span><br><span class="line">            <span class="keyword">for</span> comment <span class="keyword">in</span> comment_list[<span class="number">0</span>].find_all(<span class="string">"p"</span>):</span><br><span class="line">                comments.append(comment.text.replace(<span class="string">'BEST'</span>,<span class="string">''</span>).replace(<span class="string">'관람객'</span>,<span class="string">''</span>))</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            loop = <span class="keyword">False</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">for</span> i, comment <span class="keyword">in</span> enumerate(comments):</span><br><span class="line">        print(<span class="string">'&#123;&#125;] &#123;&#125;'</span>.format(i+<span class="number">1</span>, comment))</span><br></pre></td></tr></table></figure>
+<h4><span id="네이버-경제-기사-크롤링">네이버 경제 기사 크롤링</span></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup <span class="keyword">as</span> bs</span><br><span class="line"><span class="keyword">import</span> requests </span><br><span class="line"><span class="keyword">import</span> re </span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="comment"># Get the news for an year</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">365</span>):</span><br><span class="line">    today = datetime.date.today()</span><br><span class="line">    today = today + datetime.timedelta(-i)</span><br><span class="line">    today = (<span class="string">""</span>).join(str(today).split(<span class="string">'-'</span>))</span><br><span class="line">    print(today)</span><br><span class="line">    naver_news_today= <span class="string">"http://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&amp;sectionId=101&amp;date=&#123;&#125;"</span>.format(today)</span><br><span class="line">    print(naver_news_today)</span><br><span class="line">    res = requests.get(naver_news_today)</span><br><span class="line">    soup = bs(res.content, <span class="string">'html.parser'</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">    <span class="comment"># get rinks</span></span><br><span class="line">        rinks = []</span><br><span class="line">        <span class="comment"># top3</span></span><br><span class="line">        top3 = soup.find(<span class="string">'div'</span>, class_=<span class="string">"ranking_top3"</span>)</span><br><span class="line">        top3 = top3.select(<span class="string">"a[href]"</span>)</span><br><span class="line">        <span class="keyword">for</span> top <span class="keyword">in</span> top3:</span><br><span class="line">            rinks.append(re.search(<span class="string">'/main/\w+/\w+[.a-zA-Z?=&amp;0-9;_]+'</span>, top[<span class="string">'href'</span>]).group())</span><br><span class="line">        rinks = rinks[::<span class="number">2</span>]</span><br><span class="line">        <span class="comment"># 4 to 30th ranked news</span></span><br><span class="line">        <span class="keyword">for</span> rank <span class="keyword">in</span> range(<span class="number">4</span>,<span class="number">31</span>):</span><br><span class="line">            all_= soup.find(<span class="string">'li'</span>, class_=<span class="string">"gnum&#123;&#125;"</span>.format(rank))</span><br><span class="line">            all_ = all_.select(<span class="string">"a[href]"</span>)</span><br><span class="line">            <span class="keyword">for</span> al <span class="keyword">in</span> all_:</span><br><span class="line">                rinks.append(re.search(<span class="string">'/main/\w+/\w+[.a-zA-Z?=&amp;0-9_]+'</span>, al[<span class="string">'href'</span>]).group())</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># gathering the day's news</span></span><br><span class="line">        articles = <span class="string">'&#123;&#125;'</span>.format(today)</span><br><span class="line">        <span class="keyword">for</span> rink <span class="keyword">in</span> rinks:</span><br><span class="line">            res = requests.get(base_url+rink)</span><br><span class="line">            soup = bs(res.content, <span class="string">'html.parser'</span>)</span><br><span class="line">            article = re.sub(<span class="string">r'[\n]'</span>, <span class="string">''</span>, soup.find(<span class="string">"div"</span>, id=<span class="string">"articleBodyContents"</span>).text)</span><br><span class="line">            article = re.sub(<span class="string">r'[\w0-9a-zA-Z_.-]@[\w0-9a-zA-Z_.-]'</span>, <span class="string">''</span>, article)</span><br><span class="line">            article = re.sub(<span class="string">r'\w+\.\w+.\w+'</span>, <span class="string">''</span>, article)</span><br><span class="line">            article = re.sub(<span class="string">r'무단전재 및 재배포 금지'</span>, <span class="string">''</span>, article)</span><br><span class="line">            article = re.sub(<span class="string">r'▶.*'</span>, <span class="string">''</span>, article )</span><br><span class="line">            articles += article </span><br><span class="line">        </span><br><span class="line">        <span class="comment"># make txt files</span></span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">"article&#123;&#125;.txt"</span>.format(i), <span class="string">"w"</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(articles)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">except</span> : </span><br><span class="line">        print(<span class="string">"&#123;&#125; is missed"</span>.format(i))</span><br></pre></td></tr></table></figure>
+</div>
                 
 
                 <hr>
@@ -256,7 +482,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">test file</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Crawling with requests and BeautifulSoup</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">Requests</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.1.0.1.</span> <span class="toc-nav-text">네이버 주식 데이터 가져오기</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.1.0.2.</span> <span class="toc-nav-text">네이버 주식 데이터 가져오기</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">BeautifulSoup</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&lt; practical example &gt;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.1.0.1.</span> <span class="toc-nav-text">Post 방식</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">BeautifulSoup 으로 했던 것들</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.2.0.1.</span> <span class="toc-nav-text">네이버 경제 기사 크롤링</span></a></li></ol></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
@@ -276,9 +502,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Hexo" title="Hexo">Hexo</a>
-                        
-                          <a class="tag" href="/tags/#Blog" title="Blog">Blog</a>
+                          <a class="tag" href="/tags/#Web" title="Web">Web</a>
                         
                     </div>
                 </section>

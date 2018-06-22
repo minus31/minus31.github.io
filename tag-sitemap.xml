@@ -2,6 +2,20 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
+        <loc>http://yoursite.com/tags/Hexo/</loc>
+        <lastmod>2018-06-21T14:19:14.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/Blog/</loc>
+        <lastmod>2018-06-21T14:19:14.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/tags/etc/</loc>
         <lastmod>2018-06-22T01:50:11.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -9,15 +23,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/Hexo/</loc>
-        <lastmod>2018-06-22T01:56:58.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/Blog/</loc>
-        <lastmod>2018-06-22T01:56:58.000Z</lastmod>
+        <loc>http://yoursite.com/tags/Web/</loc>
+        <lastmod>2018-06-22T11:57:24.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
