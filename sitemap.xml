@@ -2,17 +2,17 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <sitemap>
-        <loc>http://yoursite-url/post-sitemap.xml</loc>
+        <loc>https://minus31.githun.io/post-sitemap.xml</loc>
         <lastmod>2018-06-22T00:15:55.000Z</lastmod>
     </sitemap>
 
     <sitemap>
-        <loc>http://yoursite-url/page-sitemap.xml</loc>
+        <loc>https://minus31.githun.io/page-sitemap.xml</loc>
         <lastmod>2018-06-21T14:19:14.000Z</lastmod>
     </sitemap>
 
     <sitemap>
-        <loc>http://yoursite-url/tag-sitemap.xml</loc>
+        <loc>https://minus31.githun.io/tag-sitemap.xml</loc>
         <lastmod>2018-06-21T14:19:14.000Z</lastmod>
     </sitemap>
 
