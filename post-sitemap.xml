@@ -7,6 +7,22 @@
     </url>
 
     <url>
+        <loc>https://minus31.githun.io/2018/06/22/Crawling-1/</loc>
+        <lastmod>2018-06-22T01:56:58.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://minus31.githun.io/2018/06/22/mathstudy/</loc>
+        <lastmod>2018-06-22T01:50:11.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://minus31.githun.io/2017/03/18/hexo-theme-beantech/</loc>
         <lastmod>2018-06-21T14:19:14.000Z</lastmod>
         <changefreq>weekly</changefreq>
