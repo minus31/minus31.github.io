@@ -7,8 +7,16 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2018/06/22/mathstudy/</loc>
+        <lastmod>2018-07-14T05:37:25.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/06/22/Crawling-1/</loc>
-        <lastmod>2018-06-23T01:59:02.000Z</lastmod>
+        <lastmod>2018-06-26T13:19:18.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -33,14 +41,6 @@
     <url>
         <loc>http://yoursite.com/2018/06/22/Crawling-2/</loc>
         <lastmod>2018-06-22T12:11:34.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2018/06/22/mathstudy/</loc>
-        <lastmod>2018-06-22T01:50:11.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

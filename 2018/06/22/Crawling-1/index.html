@@ -219,22 +219,12 @@
 <p>크롤링 할 때 마다, 자잘한 메서드 이름 까먹어서 이것 저것 이전 작업물들을 열어보게 된다. 한 곳에 모아놓기 1편 BeautifulSoup</p>
 </blockquote>
 <blockquote>
-<p>개인적으로는 beautifulsoup 으로 할 수 있는 작업 이면, 이것으로 하는 것을 더 좋아한다.(이유는 더 가볍고 <strong>빠르니까!!</strong>)</p>
+<p>개인적으로는 beautifulsoup 으로 할 수 있는 작업 이면, 이것으로 하는 것을 더 좋아한다.(이유는 더 가볍고 <strong>빠르니까!!</strong>) 그러나, 정보를 입력 하는 등의 웹 상에서의 행동이 필요하다면 Selenium을 쓴다. 대부분은 bs로 가능하던데 그 때 그 때 판단해서 사용한다. (* 이용 추천 - API(있다면, 이걸 쓰는게 가장 굿) -&gt; bs -&gt; Selenium(정말 안되면 사용하라, 브라우져를 직접 씌우니까 무겁다.))<br>
+<strong><strong>Flow</strong></strong></p>
 </blockquote>
-<blockquote>
-<p>그러나, 정보를 입력 하는 등의 웹 상에서의 행동이 필요하다면 Selenium을 쓴다. 대부분은 bs로 가능하던데 그 때 그 때 판단해서 사용한다.</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>이용 추천 - API(있다면, 이걸 쓰는게 가장 굿) -&gt; bs -&gt; Selenium(정말 안되면 사용하라, 브라우져를 직접 씌우니까 무겁다.)</li>
-</ul>
-</blockquote>
-<p><strong><strong>Flow</strong></strong></p>
 <ol>
 <li>
 <p>Requests로 웹 정보를 받아온다.(html, xml, json $\cdots$)</p>
-<p>$$A = \dfrac{\mathbf{L}}{\Sigma}$$i ,</p>
-<p>$\displaystyle \prod_{n = 1}^{\infin}​$</p>
 </li>
 <li>
 <p>Beautifulsoup으로 html을 파싱한다. 또는 json 파싱을 한다. (xml은 다른 라이브러리를 쓰는게 좋다.<a href="https://www.datacamp.com/community/tutorials/python-xml-elementtree" target="_blank" rel="noopener">elementtree</a>)</p>
