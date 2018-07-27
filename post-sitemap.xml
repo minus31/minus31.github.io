@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2018/07/27/BN/</loc>
+        <lastmod>2018-07-27T03:53:44.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/06/22/mathstudy/</loc>
         <lastmod>2018-07-14T05:37:25.000Z</lastmod>
         <changefreq>weekly</changefreq>
