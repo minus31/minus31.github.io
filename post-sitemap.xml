@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2017/03/18/hexo-theme-beantech/</loc>
+        <lastmod>2018-07-28T06:39:04.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/07/28/python-date/</loc>
         <lastmod>2018-07-28T06:34:21.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -57,14 +65,6 @@
     <url>
         <loc>http://yoursite.com/2018/06/22/Crawling-2/</loc>
         <lastmod>2018-06-22T12:11:34.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2017/03/18/hexo-theme-beantech/</loc>
-        <lastmod>2018-06-21T14:19:14.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
