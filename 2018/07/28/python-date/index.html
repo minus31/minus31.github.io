@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Batch Normalization  - studio-31 | 김현규
+          Python 날짜, 시간 처리하기 - studio-31 | 김현규
         
     </title>
 
-    <link rel="canonical" href="http://yoursite.com/2018/07/27/BN/">
+    <link rel="canonical" href="http://yoursite.com/2018/07/28/python-date/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('BN.svg')
+            background-image: url('clock.jpg')
             /*post*/
         
     }
@@ -90,14 +90,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Deeplearning" title="Deeplearning">Deeplearning</a>
+                              <a class="tag" href="/tags/#Python" title="Python">Python</a>
                             
                         </div>
-                        <h1>Batch Normalization </h1>
-                        <h2 class="subheading">batch normalization 적용 후 관련 내용 정리</h2>
+                        <h1>Python 날짜, 시간 처리하기</h1>
+                        <h2 class="subheading">datetime 모듈, </h2>
                         <span class="meta">
                             Posted by Hyunkyu KIM on
-                            2018-07-27
+                            2018-07-28
                         </span>
                     </div>
                 
@@ -214,86 +214,72 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1><span id="batch-normalization">BATCH NORMALIZATION</span></h1>
-<hr>
-<h4><span id="flow">* Flow</span></h4>
-<ol>
-<li>딥러닝의 고질적인 문제</li>
-<li>Batch Normalization 이란</li>
-<li>How to Use ( training / Inference )</li>
-<li>자체적인 실험</li>
-<li>누군가 있다면 질문하고 싶은 부분</li>
-</ol>
-<hr>
-<p>가장 먼저 Batch Normalization하는 수식을 보겠습니다.</p>
-<p>$\star \  Input = {x_1, x_2  \cdots x_m} , m = batch size $</p>
-<p>$\star \  output = \hat{x} = \dfrac{(x_i-  \mu_{\beta})}{\sqrt{\sigma^2_{\beta} + \epsilon}} =&gt; \gamma \hat{x} + \beta , \ \star \ \gamma, \beta =&gt; parameters$</p>
-<h4><span id="1-딥러닝의-고질적인-문제">1. 딥러닝의 고질적인 문제</span></h4>
-<p>딥러닝을 공부하게 되면, 뭐만 하면 Gradient 가 사라지고, 뭐만 하면 Overfitting 된다고 합니다. 그 이유도 너무 다양해서 공부 할 때 마다, 머릿 속으로 다시 떠올려 보게 되는데요. 역시 가장 큰 문제는 역시 layer가 깊어지기 때문에 생기는 겁니다. 망이 깊어지게 되면 거의 모든 문제를 풀 수 있겠지만, 시간이나 computational resource 가 많이 들고, 위에 말한 Gradient vanishing/exploding, Overfitting으로 인한 일반성(Generalization)의 감소 등이 발생하게 됩니다. 깊은 망에서도 Gredient가 잘 흘러가고(activation func - ReLu, 좋은(?)loss function, careful initialization), Overfitting이 되지 않도록 하는 방법(Dropout, kernel regularizer, photometric distortion(or data augmentatio) 등등!)들과 깊은 망을 쌓아도 학습을 잘 할 수 있는 아키텍쳐들이 많이 만들어졌습니다.</p>
-<p>논문에서는 문제점의 원인을 데이터 자체에서 찾았습니다. 이러한 방법 들을 사용하더라도, The distribution of nonlinearity Input 에 대한 문제는 해결되지 않아서 근본적인 방안이 아니라고 합니다. 문제를 정확히 정의 하면, Changing the distribution of nonlinearity input, 이른바 <strong><em>Internal Covariate Shift</em></strong> 입니다. Internal Covariate Shift 는 Network 안에서 입력의 분포가 달라지는 것을 말합니다. Neural Network 에서 이전 레이어의 아웃풋이 다음 레이어의 인풋이 되는데요. 이 때, 이전 레이어의 아웃풋은,  weight 와 bias가 곱해지고 더해져서 만들어진 겁니다. 물론 거기에 활성화 함수까지 통과를 합니다. 게다가 미니배치 단위로 가중치를 업데이트 하기 때문에 weight는 미니배치가 어떻게 구성되었는지에 영향을 받게 됩니다. 이러한 이유들로 이전 레이어의 parameter(의 변화)로 인해 다음 레이어 인풋의 분포가 달라질 수 있는데, 이 현상을 Internal Covariate Shift 라고 합니다. 언급한 것 처럼 Internal Covariate Shift의 원인을 Parameter 몇 몇이 너무 커지는 것 때문이라고 합니다(파라미터 평균 값보다 큰 파라미터라고도 표현 합니다.). 생각 해보면 Shallow model을 모델을 만들 때도, 특정 데이터에 대한 Parameter가 건전하지 않은 이유로 커지는 상황이 있는데요. 그 건전하지 않은 이유 중 가장 대표적인 것이 각 변수간의 Scale의 차이였습니다. 논문에서도 Neural Network 에서 인풋이 whitened, Linearly transfromed to zero mean, unit variance, decorrelated가 되었을 때, Converge를 빨리 한다고 주장합니다. 이에 대해서 좋은 설명을  <a href="https://jsideas.net/python/2018/01/28/batch_normalization.html" target="_blank" rel="noopener">JunsikWhang님 블로그</a> 에서 해주셔서 빌려옵니다. 두 가지의 loss function이 있을 때, 어느 쪽이 더 빨리 수렴하는 지 한눈에 볼 수 있는 실험입니다.</p>
-<ol>
-<li>$h_1(x) = \dfrac{x^2}{20} + y^2$</li>
-<li>$h_2(x) = x^2  + y^2 $</li>
-</ol>
-<p>이 두가지 loss가 있을 때,  둘의 차이점은 1.의 경우 x에 붙은 분모 때문에 x가 loss에 미치는 영향이 그만 큼 줄어듭니다. x를 x축, y를 y축으로 하면, 1.loss의 그래프는 2.loss보다 가로로 길쭉해지겠습니다. 그리고 Converge하는 과정을 붉은 선으로 묘사하면 아래와 같겠습니다.</p>
-<p><img src="https://www.dropbox.com/s/8d8uif1md9dny2f/Screenshot%202018-07-26%2011.54.12.png?raw=1" alt=""></p>
-<p>확실히 차이가 나겠지요.</p>
-<h4><span id="2-batch-normalization-이란">2. Batch Normalization 이란</span></h4>
-<p>저는 따라서 Batch Normalization의 목적을 Scale의 차이 때문에 생기는 Parameter의 변화로 다음 레이어의 인풋의 분포가 달라지지 않도록, 평균을 0, 분산을 1로 함으로써 방지하는 것이라고 해석했습니다.</p>
-<p>$\star \  Input = {x_1, x_2  \cdots x_m} , m = batch size $</p>
-<p>$\star \  output = \hat{x} = \dfrac{(x_i-  \mu_{\beta})}{\sqrt{\sigma^2_{\beta} + \epsilon}} =&gt; \gamma \hat{x} + \beta , \ \star \ \gamma, \beta =&gt; parameters$</p>
-<p>그냥 whitening을 할 수도 있는데, 왜 Batch Normalization을 하는 걸까요? 위의 수식으로도 알 수 있듯이, 사실 batch normalization과 whitening은 그리 다른 것이 아닙니다. Batch Normalization의 차이점은 $\gamma , \beta$의 존재 입니다. 이 둘의 역할은 무엇일까요. 그냥 whitening을 할때는 최적화 과정과 무관하게 진행되기 때문에 특정 파라미터가 커진 상태로 계속 whitening이 진행될 가능성이 존재합니다. 이전 레이어의 아웃풋에 대한 whitening이 이전 레이어의 파라미터의 변화에 영향을 받지 않기 때문입니다. 그래서 Batch Normalization은 최적화 과정에서 학습하는 파라미터 두가지를 whitening 한 뒤 곱하고($\gamma$) 더했습니다($\beta$). 이 또한 역시 미니 배치 단위로 학습을 하기 때문에 미니배치 단위로 평균과 분산을 구해서 whitening 해주었습니다. 이 두 파라미터를 추가 함으로써, 학습간에 정규화 하는 정도를 정할 수 있고, $\gamma$ 가 표준편차, $\beta$ 가 평균이라면, 정규화 되기 전으로 돌리는 identity mapping도 가능 해졌기 때문에, 좀 더 강력한 방법이라고 할 수 있습니다.</p>
-<h6><span id="batch-normalization-의-효과">Batch normalization 의 효과</span></h6>
-<ol>
-<li>
-<p>Regularization 효과</p>
-<p>(스케일의 차이에 따라 다르게 적용된다. dropout이나 l_1, l_2 weight decay, photometric Distortion을 안 써도 괜찮다고 한다.  )</p>
-</li>
-<li>
-<p>모델의 최적화를 빠르게 할 수 있다. (또한 안정적)</p>
-</li>
-</ol>
-<p>진짜로 그런지는 밑에서 실험을 통해 알아보겠습니다.</p>
-<h4><span id="3-how-to-use">3. How to Use</span></h4>
-<h6><span id="training">Training</span></h6>
-<p>Batch Normalization도 하나의 extra layer로, 보통 비선형함수 앞에 위치하게 됩니다.</p>
-<p><img src="https://www.dropbox.com/s/yvocycenduq1hxy/Screenshot%202018-07-26%2015.10.37.png?raw=1" alt=""></p>
-<p>back propagation에서 아래의 chain rule 따라 $\gamma$, $\beta$ 에 의한 loss의 미분값을 구합니다. 이 미분값을 구하는 과정은 아직도 공부 중에 있습니다.</p>
-<img src="https://www.dropbox.com/s/vi22m8d29xbw3xn/Screenshot%202018-07-26%2015.15.50.png?raw=1" width="200" height="100">
-<blockquote>
+                <h1><span id="python-날짜-시간-처리하기">Python 날짜, 시간 처리하기</span></h1>
+<p>파이썬에서 날짜와 시간을 다루는 방법을 알아보자. &gt; 새로운 걸 발견하는대로 업데이트 할 것이다.</p>
 <ul>
-<li>
-<p><strong>CNN 에서의 Batch Normalization</strong></p>
-<p>Convolutional Neural Network에서의  Batch Normalization은 그의 특성을 살리기 위해서 Batch size를 다르게 합니다.</p>
-<p>예를 들어, Batch size = 24 이고,  feature map 의 사이즈 = (100, 100) 이고 Feature map의 개수 = 32 라고 하겠습니다. 이 경우에는  Batch size(24)  * 100 * 100 개의 숫자로 구한 평균 과 분산으로 Normalize하고 feature map의 개수 만큼, 32개의 $\gamma$ 와 $\beta$ 를 만들어 업데이트 합니다.</p>
-</li>
+<li><code>시간</code>을 <code>문자열</code>로 출력하려면 <code>strftime</code> 메서드를 사용하면 된다.</li>
 </ul>
-</blockquote>
-<h6><span id="inference">Inference</span></h6>
-<p>먼저 논문에 나온  Inference 내용을 캡쳐 해봤습니다.</p>
-<img src="https://www.dropbox.com/s/p6vhrjg3vsxoqk1/Screenshot%202018-07-26%2016.09.12.png?raw=1" width="400" height="">
-<p>Test를 할때에는 평균 값은 = mini batch 간의 평균의 평균 값을,  분산값은 mini batch 분산의 평균을 사용 하되, 통계학적으로 Unbiased variance 에는 Bessel’s correlation을 통해 보정해야 함으로 $\dfrac{m}{m-1}$ (m이 커지면 1에 가까워진다.)</p>
-<h4><span id="4-자체적인-실험">4. 자체적인 실험</span></h4>
-<p>따로 다른 데이터 셋에 대해 실험 하기보다, 지금 제가 개발 중인 모델의 BN을 적용하기 전과 적용한 후를 비교해 보았습니다. 결과는 아래와 같습니다. (BN 외에는 다른 조건을 모두 동일 하게 했습니다.)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">now = datetime.datetime.now()</span><br><span class="line">print(now)          <span class="comment"># 2018-07-28 12:11:32.669083</span></span><br><span class="line"></span><br><span class="line">nowDate = now.strftime(<span class="string">'%Y-%m-%d'</span>)</span><br><span class="line">print(nowDate)      <span class="comment"># 2018-07-28</span></span><br><span class="line"> </span><br><span class="line">nowTime = now.strftime(<span class="string">'%H:%M:%S'</span>)</span><br><span class="line">print(nowTime)      <span class="comment"># 12:11:32</span></span><br><span class="line"> </span><br><span class="line">nowDatetime = now.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">print(nowDatetime)  <span class="comment"># 2018-07-28 12:11:32</span></span><br></pre></td></tr></table></figure>
+<p>날짜, 시간형식의 <code>문자열</code>을 <code>datetime</code>으로 만들 때도 <code>strptime</code>을 사용하면 된다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">timeStr = <span class="string">'2018-07-28 12:11:32'</span></span><br><span class="line">Thistime = datetime.datetime.strptime(timeStr, <span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line"></span><br><span class="line">print(type(Thistime)) <span class="comment"># [class 'datetime.datetime']</span></span><br><span class="line">print(myDatetime)       <span class="comment"># 2018-07-28 12:11:32</span></span><br></pre></td></tr></table></figure>
+<p><strong>날짜나 시간을 변경</strong>하기 위해서는 <code>replace</code> 메서드를 사용하면 된다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">myDatetime = datetime.datetime.strptime(<span class="string">'2018-07-28 12:11:32'</span>, <span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">print(myDatetime)   <span class="comment"># 2018-07-28 12:11:32</span></span><br><span class="line"> </span><br><span class="line">yourDatetime = myDatetime.replace(day=<span class="number">27</span>)</span><br><span class="line">print(myDatetime)   <span class="comment"># 2018-07-28 12:11:32</span></span><br><span class="line">print(yourDatetime) <span class="comment"># 2018-07-27 12:11:32</span></span><br></pre></td></tr></table></figure>
+<p><strong>날짜</strong>만을 관리하기 위해서는 <code>datetime.date</code>를, <strong>시간</strong>만을 관리하기 위해서는 <code>datetime.time</code>을 이용하면 된다. <code>datetime.date</code>와 <code>datetime.time</code>을 <strong>합치기</strong> 위해서는 <code>datetime.datetime.combine</code>을 이용하자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">d = datetime.date(<span class="number">2018</span>, <span class="number">7</span>, <span class="number">28</span>)</span><br><span class="line">t = datetime.time(<span class="number">12</span>, <span class="number">23</span>, <span class="number">38</span>)</span><br><span class="line"> </span><br><span class="line">dt = datetime.datetime.combine(d, t)</span><br><span class="line">print(dt) <span class="comment"># 2018-07-28 12:23:38</span></span><br></pre></td></tr></table></figure>
+<p><code>datetime</code>의 <strong>각 날짜와 시간에 관련된 항목값에 접근</strong>하려면 <code>timetuple</code> 메서드를 사용하면 된다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">now = datetime.datetime.now()</span><br><span class="line">nowTuple = now.timetuple()</span><br><span class="line">print(nowTuple)         </span><br><span class="line"><span class="comment"># time.struct_time(tm_year=2018, tm_mon=7, tm_mday=28, tm_hour=13, tm_min=21, tm_sec=40, tm_wday=6, tm_yday=109, tm_isdst=-1)</span></span><br><span class="line">print(nowTuple.tm_year) <span class="comment"># 2018</span></span><br></pre></td></tr></table></figure>
+<p><strong>날짜, 시간 연산</strong>을 해보자. datetime에 하루(1day)를 더하고 싶다면 <code>datetime.timedelta</code>를 이용하자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">now = datetime.datetime.now()</span><br><span class="line">print(now)      <span class="comment"># 2018-07-28 12:40:00.320686</span></span><br><span class="line"> </span><br><span class="line">tomorrow = now + datetime.timedelta(days=<span class="number">1</span>)</span><br><span class="line">print(tomorrow) <span class="comment"># 2018-07-29 12:40:00.320686</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>timedelta</code></strong> 에 들어갈 수 있는 인자값은 아래와 같다.</li>
+</ul>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">No BN</th>
-<th style="text-align:center">BN</th>
+<th>단위</th>
+<th>Method</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><img src="https://www.dropbox.com/s/ktlioon0swyicd9/Screenshot%202018-07-27%2011.39.01.png?raw=1" alt=""></td>
-<td style="text-align:center"><img src="https://www.dropbox.com/s/30xjzff9femt8vb/Screenshot%202018-07-27%2011.58.52.png?raw=1" alt=""></td>
+<td>1주</td>
+<td>datetime.timedelta(weeks=1)</td>
+</tr>
+<tr>
+<td>1일</td>
+<td>datetime.timedelta(days=1)</td>
+</tr>
+<tr>
+<td>1시간</td>
+<td>datetime.timedelta(hours=1)</td>
+</tr>
+<tr>
+<td>1분</td>
+<td>datetime.timedelta(minutes=1)</td>
+</tr>
+<tr>
+<td>1초</td>
+<td>datetime.timedelta(seconds=1)</td>
+</tr>
+<tr>
+<td>1밀리초</td>
+<td>datetime.timedelta(milliseconds=1)</td>
+</tr>
+<tr>
+<td>1마이크로초</td>
+<td>datetime.timedelta(microseconds=1)</td>
 </tr>
 </tbody>
 </table>
-<p>그런데…. 별 차이가 없고, BN을 적용 했을 때, 오히려 Validation_loss에 대해서는 더 변동이 심했습니다. 하지만 Training loss만 보면 BN을 적용했을 때,  훨씬 빨리 수렴했단 것을 알 수 있습니다. 사실 제가 만들고 있는 모델에 사용하는 데이터가 갯수도 적고, 컨디션도 나빠서 저렇게 나온 것 같습니다. 위 그래프로는 효과가 잘 안 보일 수 있겠지만, 개인적으로  모델을 계속 개발하는데에 있어서, BN을 적용한 뒤 훨씬 안정적인 학습을 하고 있습니다.</p>
-<h4><span id="5-누군가-있다면-질문하고-싶은-부분">5. 누군가 있다면 질문하고 싶은 부분</span></h4>
-<ol>
-<li>Normalization 시에 사용하는 배치의 분산이 '0’이 됬을 때, 문제가 생기는 것을 방지하는 작은 상수 $\epsilon$ 은 구현 시에 정확이 얼마의 값을 넣는가?</li>
-</ol>
+<blockquote>
+<p><code>timedelta</code>로 ex&gt; <strong>5시간 30분</strong> 을 표현하면</p>
+<ul>
+<li>datetime.timedelta(hours=5, minutes=30)</li>
+<li>이것을 초(second) 단위로 변경하려면 total_seconds() 메서드를 호출하면 초단위로 쉽게 변경할 수 있다.</li>
+</ul>
+</blockquote>
+<p><code>datetime</code>에서 <code>datetime</code>을 빼면 <strong><code>timedelta</code></strong> 값을 얻을 수 있다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"> </span><br><span class="line">a_Datetime = datetime.datetime.strptime(<span class="string">'2018-07-28 00:00:00'</span>, <span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">b_Datetime = datetime.datetime.strptime(<span class="string">'2018-07-27 00:00:10'</span>, <span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">result = a_Datetime - b_Datetime</span><br><span class="line">print(result)         <span class="comment"># 1 day, 0:00:10</span></span><br><span class="line">print(result.days)    <span class="comment"># 1</span></span><br><span class="line">print(result.seconds) <span class="comment"># 10</span></span><br></pre></td></tr></table></figure>
 
                 
 
@@ -301,13 +287,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2018/07/28/python-date/" data-toggle="tooltip" data-placement="top" title="Python 날짜, 시간 처리하기">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2018/06/22/Crawling-3/" data-toggle="tooltip" data-placement="top" title="CSS selector & XPATH ">Next Post &rarr;</a>
+                            <a href="/2018/07/27/BN/" data-toggle="tooltip" data-placement="top" title="Batch Normalization ">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -337,7 +319,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">BATCH NORMALIZATION</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.1.</span> <span class="toc-nav-text">* Flow</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.2.</span> <span class="toc-nav-text">1. 딥러닝의 고질적인 문제</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.3.</span> <span class="toc-nav-text">2. Batch Normalization 이란</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-6"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.3.0.1.</span> <span class="toc-nav-text">Batch normalization 의 효과</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.4.</span> <span class="toc-nav-text">3. How to Use</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-6"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.4.0.1.</span> <span class="toc-nav-text">Training</span></a></li><li class="toc-nav-item toc-nav-level-6"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.4.0.2.</span> <span class="toc-nav-text">Inference</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.5.</span> <span class="toc-nav-text">4. 자체적인 실험</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.0.0.6.</span> <span class="toc-nav-text">5. 누군가 있다면 질문하고 싶은 부분</span></a></li></ol></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Python 날짜, 시간 처리하기</span></a></li></ol>
         
         </div>
       </aside>
@@ -357,7 +339,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Deeplearning" title="Deeplearning">Deeplearning</a>
+                          <a class="tag" href="/tags/#Python" title="Python">Python</a>
                         
                     </div>
                 </section>
@@ -392,8 +374,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "your-disqus-ID";
-    var disqus_identifier = "http://yoursite.com/2018/07/27/BN/";
-    var disqus_url = "http://yoursite.com/2018/07/27/BN/";
+    var disqus_identifier = "http://yoursite.com/2018/07/28/python-date/";
+    var disqus_url = "http://yoursite.com/2018/07/28/python-date/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

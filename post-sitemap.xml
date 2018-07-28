@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2018/07/28/python-date/</loc>
+        <lastmod>2018-07-28T06:34:21.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/07/27/BN/</loc>
         <lastmod>2018-07-27T03:53:44.000Z</lastmod>
         <changefreq>weekly</changefreq>
