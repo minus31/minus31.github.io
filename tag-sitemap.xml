@@ -9,13 +9,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/etc/</loc>
-        <lastmod>2018-07-14T05:37:25.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/tags/Deeplearning/</loc>
         <lastmod>2018-07-27T03:53:44.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -32,6 +25,13 @@
     <url>
         <loc>http://yoursite.com/tags/Blog/</loc>
         <lastmod>2018-07-28T06:39:04.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/etc/</loc>
+        <lastmod>2018-08-06T02:46:02.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
