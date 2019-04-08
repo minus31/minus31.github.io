@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://yoursite.com/tags/Web/">
+    <link rel="canonical" href="http://yoursite.com/2019/04/05/ArcFace/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,8 +69,8 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/undefined')
-            /*page*/
+            background-image: url('undefined')
+            /*post*/
         
     }
     
@@ -87,10 +87,16 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 
-                    <div class="site-heading">
-                        <h1>Studio -31</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading">Data related works</span>
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1></h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Hyunkyu KIM on
+                            2019-04-05
+                        </span>
                     </div>
                 
 
@@ -193,352 +199,193 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-                
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <!-- 归档列表 -->
-            
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-             <!-- 归档列表 -->
+                <h2><span id="arcface-additive-angular-margin-loss-for-deep-face-recognition">ArcFace Additive Angular Margin Loss for Deep Face Recognition</span></h2>
+<p>[Paper link] : <a href="https://arxiv.org/abs/1801.07698" target="_blank" rel="noopener">https://arxiv.org/abs/1801.07698</a></p>
+<p>In face recognition, designing loss function is key point to enhance discriminative power. In this paper, the author propose an Additive Angular margin loss(it’s obviously one kind of margin loss) for clear geometric interpretation thanks to its the exact correspondence to the geodesic distance on the hyper-shpere.</p>
+<p>The paper insists the drawbacks of other losses which are used for similar tasks</p>
+<ol>
+<li>softmax loss : it can be separable for classification task but not fully discriminative and the size of the linear transformation matrix grows up linearly with the number of classes</li>
+<li>Triplet loss : it is not proper for large-scale datasets because of its explosion of combinatorial and semi-hard sample mining is quite hard thing to solve for effective model training</li>
+<li>SphereFace : its multiplication with integer makes convergence hard because the target logit curve very precipitous</li>
+<li>CosFace :  it admits much easier implementation and relieves the need for joint supervision from the softmax loss.</li>
+</ol>
+<p>It tells the dot product between the deep feature and fully connected layer is equal to the cosine distance after feature and weight normalization. Using <strong>arccos function</strong> to calculate the angle between the current feature and the target weight. And then, Adds an additive angular margin to the target  angle and can get the target logit back again by a fixed feature norm, and the subsequent steps are exactly the same as in softmax loss</p>
+<p><strong>Advantages of the ArcFAce</strong></p>
+<ol>
+<li>Engaging : directly optimise the geodesic distance margin</li>
+<li>Effective : results prove</li>
+<li>Easy : easy to implement and train</li>
+<li>Efficient : not much additional computation</li>
+</ol>
+<p><strong>Approach</strong></p>
+<p>A normal softmax-loss is not enough for enforcing higher similarity for intra-class samples and diversity for inter-class samples especially under lage intra-class variations. (for simplicity, they fix the bias bj = 0 )</p>
+<p>At first, normalize the weight and feature vector and on rescale feature to $s$. This makes the predictions only depend on the angle between the feature and the weight. Learned embedding features are thus distributed on a hypersphere with a radius of $s$. And add margin penalty like below.</p>
+<p>$\large L_{arc} = - \dfrac{1}{N} \sum_{i=1}^{N} \log{\dfrac{e^{s(\cos(\theta_{y_i} + m)}}{e^{s(\cos(\theta_{y_i} =m))} + \sum_{j=1, j\neq y_i}^n e^{s \cos \theta_j}}}​$</p>
+<p><strong>Comparison with SphereFace and CosFace</strong></p>
+<p>These proposed three diffrent kinds of margin penalty.</p>
+<ol>
+<li>multiplicative angular margin - $m_1​$</li>
+<li>additive angular margin  - $m_2$</li>
+<li>additive cosine margin  - $m_3$</li>
+</ol>
+<p>Combine them,</p>
+<p>$\large L_4 = - \dfrac{1}{N} \displaystyle\sum_{i=1}^N \log \dfrac{ e^{s(\cos(m_1 \theta_{y_i} + m_2) -m_3) }}{  e^{s(\cos(m_1 \theta_{y_i} + m_2) -m_3) +\sum_{j=1, j\neq y_i}^{n} e^{s \cos \theta_j}}}​$</p>
+<p>As Figure 5 (below) illustrates that ArcFace’s decision boundaries in binary classification is linear but that of the others are non-linear.</p>
+<img src="https://www.dropbox.com/s/w369l1kpiqekiti/Screenshot%202019-04-09%2001.21.46.png?raw=1">
+<p>The Paper said Combined loss function increase the performance but it had upper-bounded by the performance of ArcFace.</p>
+<p><strong>Parameters</strong></p>
+<p>They found that the optimal $s$ and $m_2$ are 64 and 0.5.</p>
+<p><strong>Other Loss functions mentioned in the paper</strong></p>
+<ul>
+<li><strong>Centre Loss</strong> : Penelizing the distance between deep features from a same or corresponding class in <strong>Euclidean space</strong> to achieve Intra-class Compateness (loss function’s formulation is equal to Softmax loss, which is written above)</li>
+<li><strong>SphereFace</strong> : Assuming the last layer’s linear transformation(inner product of weight and deep feature) can be used as a representation of the class centres in an <strong>angular space</strong>. And, to make the model be more discriminative, it penelize  the angle between deep feature and its weight by multipling margin which is over or equal 1.</li>
+<li><strong>CosFace</strong> : directly adds cosine margin penalty to the target logit. it perform better than SphereFace. But it admits much easier implementation and relieves the need for joint supervision from the softmax loss.</li>
+</ul>
+<p><strong>Conclusion</strong></p>
+<p>ArcFace loss got ahead of the state of the art.</p>
+<img src="https://www.dropbox.com/s/3wi7oqfv8b0lxwk/Screenshot%202019-04-09%2001.52.15.png?raw=1">
 
-            
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2019">
-                    <span class="tag-text">2019</span>
-                </span>
-                <ul>
                 
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    04-05
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2019/04/05/ArcFace/" style="color: #0085a1">
-                        <span>
-                            Untitled
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/07/28/python-date/" data-toggle="tooltip" data-placement="top" title="Python 날짜, 시간 처리하기">Next Post &rarr;</a>
+                        </li>
+                    
                 </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
             </div>
             
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2018">
-                    <span class="tag-text">2018</span>
-                </span>
-                <ul>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    07-28
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/07/28/python-date/" style="color: #0085a1">
-                        <span>
-                            Python 날짜, 시간 처리하기
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    07-27
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/07/27/BN/" style="color: #0085a1">
-                        <span>
-                            Batch Normalization 
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    06-22
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/06/22/Crawling-3/" style="color: #0085a1">
-                        <span>
-                            CSS selector & XPATH 
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    06-22
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/06/22/Crawling-2/" style="color: #0085a1">
-                        <span>
-                            Crawling with Selenium 
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    06-22
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/06/22/githublicense/" style="color: #0085a1">
-                        <span>
-                            Github License List 
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    06-22
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/06/22/Crawling-1/" style="color: #0085a1">
-                        <span>
-                            Crawling with requests and BeautifulSoup 
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    06-22
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/06/22/mathstudy/" style="color: #0085a1">
-                        <span>
-                            [Fastcampus] 수학 스터디 참고 자료
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                </ul>
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2017">
-                    <span class="tag-text">2017</span>
-                </span>
-                <ul>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    03-18
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2017/03/18/hexo-theme-beantech/" style="color: #0085a1">
-                        <span>
-                            [Hexo] Theme BeanTech
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                </ul>
-            </div>
-            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                        <li><a href="" target="_blank"></a></li>
+                    
+                </ul>
+                
+            </div>
         </div>
     </div>
-</div>
+</article>
 
-                <!-- 如果开启评论功能 -->
-                
-            </div>
 
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
 
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-    <div class="tags">
-        
-            
-        
-            
-            <a href="/tags/#Web" title="Web" rel="3">Web</a>
-            
-        
-            
-            <a href="/tags/#etc" title="etc" rel="2">etc</a>
-            
-        
-            
-        
-            
-        
-    </div>
-</section>
 
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">ABOUT ME</a></h5>
-    <div class="short-about">
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://yoursite.com/2019/04/05/ArcFace/";
+    var disqus_url = "http://yoursite.com/2019/04/05/ArcFace/";
 
-        
-            <img id = "avatar_pic" src="/img/profile_logo.jpeg" />
-        
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
 
-        
-            <p>Working on Data division</p>
-        
 
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
 
-            
 
-            
-                <li>
-                    <a target="_blank" href="https://www.facebook.com/Kimhyunkyu">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/minus31">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-                <li>
-                    <a target="_blank"  href="https://www.linkedin.com/in/in/hyunkyukim">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-        </ul>
-    </div>
-</section>
-        <hr>
-    
-        
-  <h5>RECENT POSTS</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/2019/04/05/ArcFace/">(no title)</a>
-        </li>
-      
-        <li>
-          <a href="/2018/07/28/python-date/">Python 날짜, 시간 처리하기</a>
-        </li>
-      
-        <li>
-          <a href="/2018/07/27/BN/">Batch Normalization </a>
-        </li>
-      
-        <li>
-          <a href="/2018/06/22/Crawling-3/">CSS selector &amp; XPATH </a>
-        </li>
-      
-        <li>
-          <a href="/2018/06/22/Crawling-2/">Crawling with Selenium </a>
-        </li>
-      
-    </ul>
-  </div>
-
-        <hr>
-    
-        <!-- Friends Blog -->
-
-<h5>FRIENDS</h5>
-<ul class="list-inline">
-
-    
-        <li><a href="" target="_blank"></a></li>
-    
-        <li><a href="" target="_blank"></a></li>
-    
-        <li><a href="" target="_blank"></a></li>
-    
-        <li><a href="" target="_blank"></a></li>
-    
-</ul>
-
-        <hr>
-    
-</div>
-
-        
-    </div>
-</div>
 
 
     <!-- Footer -->

@@ -7,6 +7,22 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2019/04/05/ArcFace/</loc>
+        <lastmod>2019-04-08T16:52:30.107Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2018/07/27/BN/</loc>
+        <lastmod>2018-08-06T04:03:54.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2018/06/22/mathstudy/</loc>
         <lastmod>2018-08-06T02:46:02.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -25,14 +41,6 @@
     <url>
         <loc>http://yoursite.com/2018/07/28/python-date/</loc>
         <lastmod>2018-07-28T06:34:21.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2018/07/27/BN/</loc>
-        <lastmod>2018-07-27T03:53:44.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
