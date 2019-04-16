@@ -9,13 +9,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/Python/</loc>
-        <lastmod>2018-07-28T06:34:21.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/tags/Blog/</loc>
         <lastmod>2018-07-28T06:39:04.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -32,6 +25,20 @@
     <url>
         <loc>http://yoursite.com/tags/Deeplearning/</loc>
         <lastmod>2019-04-16T07:05:32.850Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/Python/</loc>
+        <lastmod>2019-04-16T07:16:59.892Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/machine-learning-image/</loc>
+        <lastmod>2019-04-16T07:17:12.024Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
